@@ -6,7 +6,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start:sqlite": "node --watch server-with-sqlite.js"
+    "start:sqlite": "node --watch server-with-sqlite.js",
+    "start:turso": "node --watch server-with-turso.js"
   },
   "keywords": [],
   "author": "",

@@ -53,7 +53,6 @@ export function FormFields ({ setOpen, equipment, state }) {
   })
 
   function onSubmit (values) {
-    console.log(values)
     if (state === 'En reparación') {
       const exitCondition = { exit_condition: values.exit_condition }
       setRepairEquipment(equipment.id, exitCondition)
