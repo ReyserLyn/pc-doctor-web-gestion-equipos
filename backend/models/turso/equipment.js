@@ -2,13 +2,12 @@ import * as crypto from 'crypto'
 import { DateTime } from 'luxon'
 import dotenv from 'dotenv'
 import { createClient } from '@libsql/client'
-import { DB_TOKEN } from '../../config.js'
 
 dotenv.config()
 
 const db = createClient({
   url: 'libsql://pcdoctor-reyserzap.turso.io',
-  authToken: DB_TOKEN
+  authToken: process.env.DB_TOKEN
 })
 
 export class EquipmentModel {

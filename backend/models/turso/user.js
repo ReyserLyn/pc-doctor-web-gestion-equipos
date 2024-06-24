@@ -2,14 +2,13 @@ import * as crypto from 'crypto'
 import { DateTime } from 'luxon'
 import * as bcrypt from 'bcrypt'
 import dotenv from 'dotenv'
-import { SALT_ROUNDS, DB_TOKEN } from '../../config.js'
 import { createClient } from '@libsql/client'
 
 dotenv.config()
 
 const db = createClient({
   url: 'libsql://pcdoctor-reyserzap.turso.io',
-  authToken: DB_TOKEN
+  authToken: process.env.DB_TOKEN
 })
 
 export class UserModel {
