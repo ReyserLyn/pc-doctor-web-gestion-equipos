@@ -7,15 +7,17 @@ import { Toaster } from '@/components/ui/sonner'
 import { BrowserRouter } from 'react-router-dom'
 import { AuthProvider } from './context/auth.jsx'
 import { EquipmentProvider } from './context/equipment.jsx'
+import { UserProvider } from './context/user.jsx'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <AuthProvider>
     <EquipmentProvider>
-      <BrowserRouter>
-        <Toaster richColors />
-
-        <App />
-      </BrowserRouter>
+      <UserProvider>
+        <BrowserRouter>
+          <Toaster richColors />
+          <App />
+        </BrowserRouter>
+      </UserProvider>
     </EquipmentProvider>
   </AuthProvider>
 )

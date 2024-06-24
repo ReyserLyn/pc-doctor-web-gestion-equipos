@@ -3,7 +3,6 @@
 import { ArrowUpDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
-
 import { RowActions } from './RowActions'
 
 export const Columns = () => [
@@ -74,17 +73,7 @@ export const Columns = () => [
   },
   {
     accessorKey: 'reception_date',
-    header: ({ column }) => {
-      return (
-        <Button
-          variant='ghost'
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-        >
-          Fecha de Recepción
-          <ArrowUpDown className='ml-2 h-4 w-4' />
-        </Button>
-      )
-    },
+    header: 'Fecha de Recepción',
     cell: ({ row }) => {
       return <div>{row.getValue('reception_date')}</div>
     },
@@ -109,24 +98,29 @@ export const Columns = () => [
     cell: ({ row }) => {
       const state = row.getValue('state')
       let backgroundColorClass = ''
+      let textColorClass = ''
 
       switch (state) {
         case 'En reparación':
-          backgroundColorClass = 'bg-yellow-200'
+          backgroundColorClass = 'bg-yellow-100'
+          textColorClass = 'text-yellow-800'
           break
         case 'Reparado':
-          backgroundColorClass = 'bg-green-200'
+          backgroundColorClass = 'bg-green-100'
+          textColorClass = 'text-green-800'
           break
         case 'Entregado':
-          backgroundColorClass = 'bg-blue-200'
+          backgroundColorClass = 'bg-blue-100'
+          textColorClass = 'text-blue-800'
           break
         default:
-          backgroundColorClass = 'bg-gray-200'
+          backgroundColorClass = 'bg-gray-100'
+          textColorClass = 'text-gray-800'
           break
       }
 
       return (
-        <div className={`px-2 py-1.5 rounded ${backgroundColorClass}`}>
+        <div className={`${backgroundColorClass} ${textColorClass} rounded-lg px-2 py-1 text-xs font-semibold`}>
           {state}
         </div>
       )

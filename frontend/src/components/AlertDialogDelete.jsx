@@ -10,7 +10,7 @@ import {
   DialogTrigger
 } from '@/components/ui/dialog'
 
-export const AlertDialogDelete = ({ children, deleteFunction }) => {
+export const AlertDialogDelete = ({ children, title, description, deleteFunction }) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -18,9 +18,9 @@ export const AlertDialogDelete = ({ children, deleteFunction }) => {
       </DialogTrigger>
       <DialogContent className='sm:max-w-md'>
         <DialogHeader>
-          <DialogTitle>¿Estás seguro de eliminar este equipo?</DialogTitle>
+          <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
-            Esta acción no se puede deshacer. Se eliminará permanentemente el equipo y sus datos asociados.
+            {description}
           </DialogDescription>
         </DialogHeader>
 

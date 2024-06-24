@@ -22,10 +22,10 @@ export class UserController {
   register = async (req, res) => {
     const newUser = await this.userModel.register({ user: req.body })
 
-    if (newUser) {
-      return res.status(201).json(newUser)
+    if ('error' in newUser) {
+      return res.json({ message: newUser.error })
     } else {
-      return res.json({ message: 'El username ya existe' })
+      return res.json(newUser)
     }
   }
 
@@ -55,10 +55,10 @@ export class UserController {
     const { id } = req.params
     const updateUser = await this.userModel.update({ id, user: req.body })
 
-    if (updateUser) {
-      return res.json(updateUser)
+    if ('error' in updateUser) {
+      return res.json({ message: updateUser.error })
     } else {
-      return res.json({ message: 'El usuario no existe' })
+      return res.json(updateUser)
     }
   }
 }

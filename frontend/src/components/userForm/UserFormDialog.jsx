@@ -1,7 +1,7 @@
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { FormFields } from './FormFields'
 
-export const EquipmentFormDialog = ({ children, open, setOpen, title, description, equipment, device }) => {
+export function UserFormDialog ({ children, open, setOpen, title, description, user, role, status }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -15,7 +15,7 @@ export const EquipmentFormDialog = ({ children, open, setOpen, title, descriptio
 
         </DialogHeader>
 
-        <FormFields setOpen={setOpen} equipment={equipment} device={device} />
+        <FormFields setOpen={setOpen} user={user} role={role} status={status} />
 
       </DialogContent>
     </Dialog>

@@ -129,7 +129,11 @@ export const RowActions = ({ row }) => {
             </DropdownMenuItem>
           </EquipmentForm>
 
-          <AlertDialogDelete deleteFunction={handleDelete}>
+          <AlertDialogDelete
+            deleteFunction={handleDelete}
+            title='¿Estás seguro de eliminar este equipo?'
+            description='Esta acción no se puede deshacer. El equipo se eliminará permanentemente y sus datos asociados.'
+          >
             <DropdownMenuItem onSelect={(e) => { e.preventDefault() }}>
               <Trash className='h-4 w-4 mr-2' />
               Eliminar equipo

@@ -27,19 +27,20 @@ export class UserModel {
       password,
       email,
       phone,
+      role_id, // eslint-disable-line camelcase
       status_id // eslint-disable-line camelcase
     } = user
+
+    const existingUserWithUsername = await db.prepare('SELECT * FROM users WHERE username = ?').get(username)
+    if (existingUserWithUsername) {
+      return { error: 'Ya existe otro usuario con este nombre de usuario. Por favor, elige uno diferente.' }
+    }
 
     const id = crypto.randomUUID()
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS)
 
     const now = DateTime.now().setZone('America/Lima')
     const created_at = now.toFormat('dd/MM/yyyy, HH:mm') // eslint-disable-line camelcase
-    const role_id = 1 // eslint-disable-line camelcase
-
-    const existingUser = await db.prepare('SELECT first_name, last_name, username, email, phone, role_id, status_id FROM users WHERE username = ?').get(username)
-
-    if (existingUser) return null
 
     try {
       await db.prepare('INSERT INTO users (id, first_name, last_name, username, password, email, phone, role_id, status_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
@@ -55,8 +56,28 @@ export class UserModel {
   }
 
   static async getAll () {
-    const users = await db.prepare('SELECT first_name, last_name, username, email, phone, role_id, status_id FROM users').all()
+    const query = `
+      SELECT 
+        users.id, 
+        users.first_name, 
+        users.last_name, 
+        users.username, 
+        users.email, 
+        users.phone, 
+        role_user.name as role, 
+        state_user.name as status 
+      FROM users
+      JOIN role_user ON users.role_id = role_user.id
+      JOIN state_user ON users.status_id = state_user.id
+      ORDER BY 
+        state_user.id,
+        CASE 
+          WHEN users.role_id = 1 THEN 1
+          WHEN users.role_id = 2 THEN 2
+        END
+    `
 
+    const users = await db.prepare(query).all()
     return users
   }
 
@@ -68,7 +89,7 @@ export class UserModel {
   }
 
   static async delete ({ id }) {
-    const user = await db.prepare('SELECT first_name, last_name, username, email, phone, role_id, status_id FROM users WHERE id = ?').get(id)
+    const user = await db.prepare('SELECT username FROM users WHERE id = ?').get(id)
     if (!user) return null
 
     try {
@@ -91,18 +112,33 @@ export class UserModel {
       status_id // eslint-disable-line camelcase
     } = user
 
-    const existingUser = await db.prepare('SELECT first_name, last_name, username, email, phone, role_id, status_id FROM users WHERE id = ?').get(id)
-    if (!existingUser) return null
+    const existingUser = await db.prepare('SELECT * FROM users WHERE id = ?').get(id)
+    if (!existingUser) {
+      return { error: 'El usuario no existe' }
+    }
+
+    const existingUserWithUsername = await db.prepare('SELECT * FROM users WHERE username = ? AND id != ?').get(username, id)
+    if (existingUserWithUsername) {
+      return { error: 'Ya existe otro usuario con este nombre de usuario. Por favor, elige uno diferente.' }
+    }
+
+    if (password) {
+      const isPasswordValid = await bcrypt.compare(password, existingUser.password)
+      if (isPasswordValid) {
+        return { error: 'La contraseña proporcionada es igual a la contraseña actual. Debes ingresar una contraseña diferente.' }
+      }
+    }
+
+    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS)
 
     try {
-      await db.prepare('UPDATE users SET first_name = ?, last_name = ?, username = ?, password = ?, email = ?, phone = ?, role_id = ?, status_id = ? WHERE id = ?')
-        .run(first_name, last_name, username, password, email, phone, role_id, status_id, id)
+      await db.prepare('UPDATE users SET first_name = ?, last_name = ?, username = ?, password=?, email = ?, phone = ?, role_id = ?, status_id = ? WHERE id = ?')
+        .run(first_name, last_name, username, hashedPassword, email, phone, role_id, status_id, id)
     } catch (error) {
       throw new Error('Error al actualizar usuario')
     }
 
-    const updatedUser = await db.prepare('SELECT first_name, last_name, username, email, phone, role_id, status_id FROM users WHERE id = ?').get(id)
-
+    const updatedUser = await db.prepare('SELECT * FROM users WHERE id = ?').get(id)
     return updatedUser
   }
 }
