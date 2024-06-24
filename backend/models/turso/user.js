@@ -5,6 +5,7 @@ import dotenv from 'dotenv'
 import { createClient } from '@libsql/client'
 
 dotenv.config()
+const SALT_ROUNDS = 10
 
 const db = createClient({
   url: 'libsql://pcdoctor-reyserzap.turso.io',
