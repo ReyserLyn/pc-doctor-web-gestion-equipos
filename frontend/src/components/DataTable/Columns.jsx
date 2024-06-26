@@ -1,7 +1,5 @@
 'use client'
 
-import { ArrowUpDown } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { RowActions } from './RowActions'
 
@@ -30,17 +28,7 @@ export const Columns = () => [
   },
   {
     accessorKey: 'customer',
-    header: ({ column }) => {
-      return (
-        <Button
-          variant='ghost'
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-        >
-          Clientes
-          <ArrowUpDown className='ml-2 h-4 w-4' />
-        </Button>
-      )
-    },
+    header: 'Clientes',
     cell: ({ row }) => <div className='capitalize pl-4'>{row.getValue('customer')}</div>
   },
   {
@@ -132,7 +120,8 @@ export const Columns = () => [
     enableHiding: false,
     cell: ({ row }) => (
       <RowActions row={row} />
-    )
+    ),
+    enableSorting: false
   }
 
 ]

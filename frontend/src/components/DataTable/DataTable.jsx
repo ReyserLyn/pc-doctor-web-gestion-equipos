@@ -102,7 +102,8 @@ export const DataTable = () => {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant='outline' className='ml-auto'>
-              Columnas <ChevronDown className='ml-2 h-4 w-4' />
+              Columnas
+              <ChevronDown className='ml-2 h-4 w-4' />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align='end'>
@@ -131,14 +132,26 @@ export const DataTable = () => {
             {table.getHeaderGroups().map(headerGroup => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map(header => {
+                  const isSorted = header.column.getIsSorted()
+
                   return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                    <TableHead key={header.id} onClick={header.column.getToggleSortingHandler()}>
+                      {
+                        header.isPlaceholder
+                          ? null
+                          : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )
+                      }
+                      {
+                        isSorted === 'asc'
+                          ? ' ⭡'
+                          : isSorted === 'desc'
+                            ? ' ⭣'
+                            : ''
+                      }
+
                     </TableHead>
                   )
                 })}
