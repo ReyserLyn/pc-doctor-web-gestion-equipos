@@ -24,13 +24,13 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 
-import { useState, useContext } from 'react'
+import { useState, useContext, useEffect } from 'react'
 import { ChevronDown } from 'lucide-react'
 
 import { Columns } from '@/components/DataTable/Columns'
 import { EquipmentContext } from '@/context/equipment'
 
-export const DataTable = () => {
+export const DataTable = ({ setSelectedRows }) => {
   const { equipments, statusCounts } = useContext(EquipmentContext)
 
   const [sorting, setSorting] = useState([])
@@ -73,6 +73,12 @@ export const DataTable = () => {
     setStateFilter(filterValue)
     table.getColumn('state')?.setFilterValue(filterValue)
   }
+
+  useEffect(() => {
+    const selectedRows = table.getFilteredSelectedRowModel().rows
+    const selectedData = selectedRows.map(row => row.original)
+    setSelectedRows(selectedData)
+  }, [rowSelection])
 
   return (
     <>

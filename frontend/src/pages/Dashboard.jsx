@@ -13,7 +13,12 @@ import { DataTable } from '@/components/DataTable/DataTable'
 import { NavBar } from '@/components/NavBar'
 import { NavBarPhone } from '@/components/navBarPhone'
 
+import { PDFEquipment } from '@/components/PDFEquipment'
+import { useState } from 'react'
+
 export function Dashboard () {
+  const [selectedRows, setSelectedRows] = useState([])
+
   return (
     <div className='grid w-full bg-muted/40'>
       <ResizablePanelGroup direction='horizontal' className='rounded-lg border'>
@@ -27,10 +32,13 @@ export function Dashboard () {
           <div className='w-full p-8 min-h-screen'>
 
             <NavBarPhone title='Sistema PcDoctor'>
-              <Button variant='outline'>
-                <PrinterIcon className='w-5 h-5 mr-2' />
-                Imprimir
-              </Button>
+
+              <PDFEquipment equipments={selectedRows}>
+                <Button variant='outline'>
+                  <PrinterIcon className='w-5 h-5 mr-2' />
+                  Imprimir
+                </Button>
+              </PDFEquipment>
 
               <EquipmentForm
                 title='Nuevo Equipo'
@@ -43,7 +51,7 @@ export function Dashboard () {
               </EquipmentForm>
             </NavBarPhone>
 
-            <DataTable />
+            <DataTable setSelectedRows={setSelectedRows} />
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>
