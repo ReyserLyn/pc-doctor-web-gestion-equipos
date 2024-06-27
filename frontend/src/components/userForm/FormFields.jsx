@@ -21,6 +21,7 @@ import { Button } from '@/components/ui/button'
 
 import { useState, useEffect, useContext } from 'react'
 import { UserContext } from '@/context/user'
+import { Loader2 } from 'lucide-react'
 
 const formSchema = z.object({
   first_name: z
@@ -53,6 +54,7 @@ const formSchema = z.object({
 export function FormFields ({ setOpen, user, role, status }) {
   const { createUser, editUser } = useContext(UserContext)
   const [isEdit, setIsEdit] = useState(false)
+  const [loading, isLoading] = useState(false)
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -107,20 +109,24 @@ export function FormFields ({ setOpen, user, role, status }) {
   }
 
   async function onSubmit (values) {
+    isLoading(true)
+
     try {
+      let success = false
+
       if (isEdit) {
-        const success = await editUser(values, user.id)
-        if (success) {
-          setOpen(false)
-        }
+        success = await editUser(values, user.id)
       } else {
-        const success = await createUser(values)
-        if (success) {
-          setOpen(false)
-        }
+        success = await createUser(values)
+      }
+
+      if (success) {
+        setOpen(false)
       }
     } catch (error) {
       console.error('Error al procesar el formulario:', error.message)
+    } finally {
+      isLoading(false)
     }
   }
 
@@ -286,7 +292,19 @@ export function FormFields ({ setOpen, user, role, status }) {
 
         </div>
         <div className='flex flex-col md:flex-row md:items-center md:justify-end gap-2'>
-          <Button type='submit' className='w-full md:w-auto'>Guardar</Button>
+          {
+             loading
+               ? (
+                 <Button disabled>
+                   <Loader2 className='mr-2 h-4 w-4 animate-spin ' />
+                   Cargando
+                 </Button>
+                 )
+               : (
+                 <Button type='submit' className='w-full md:w-auto'>Guardar</Button>
+                 )
+          }
+
           <Button type='button' variant='secondary' onClick={() => setOpen(false)}>Cancelar</Button>
         </div>
       </form>

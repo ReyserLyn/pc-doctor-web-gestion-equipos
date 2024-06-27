@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { format } from 'date-fns'
-import { CalendarIcon } from 'lucide-react'
+import { CalendarIcon, Loader2, Save, X } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { es } from 'date-fns/locale'
@@ -26,7 +26,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 
 import { EquipmentContext } from '@/context/equipment'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 
 const formSchema = z.object({
   exit_condition: z.string(),
@@ -37,6 +37,7 @@ const formSchema = z.object({
 
 export function FormFields ({ setOpen, equipment, state }) {
   const { setRepairEquipment, setDeliveredEquipment } = useContext(EquipmentContext)
+  const [loading, isLoading] = useState(false)
 
   const receptionDate = equipment.reception_date.split(' ')[0]
   const dateString = receptionDate
@@ -53,13 +54,17 @@ export function FormFields ({ setOpen, equipment, state }) {
   })
 
   function onSubmit (values) {
+    isLoading(true)
+
     if (state === 'En reparación') {
       const exitCondition = { exit_condition: values.exit_condition }
       setRepairEquipment(equipment.id, exitCondition)
+      isLoading(false)
     } else if (state === 'Reparado') {
       const formattedDate = format(new Date(values.delivery_date), 'dd/MM/yyyy HH:mm')
       const date = { delivery_date: formattedDate }
       setDeliveredEquipment(equipment.id, date)
+      isLoading(false)
     }
   }
 
@@ -170,10 +175,24 @@ export function FormFields ({ setOpen, equipment, state }) {
         </div>
 
         <div className='flex flex-col md:flex-row md:items-center md:justify-end gap-2'>
-          <Button type='submit' className='w-full md:w-auto'>
-            Guardar
-          </Button>
+          {
+            loading
+              ? (
+                <Button disabled>
+                  <Loader2 className='mr-2 h-4 w-4 animate-spin ' />
+                  Cargando
+                </Button>
+                )
+              : (
+                <Button type='submit' className='w-full md:w-auto'>
+                  <Save className='w-4 h-4 mr-2' />
+                  Guardar
+                </Button>
+                )
+          }
+
           <Button type='button' variant='secondary' onClick={() => setOpen(false)}>
+            <X className='w-4 h-4 mr-2' />
             Cancelar
           </Button>
         </div>

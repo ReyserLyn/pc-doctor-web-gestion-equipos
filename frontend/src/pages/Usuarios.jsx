@@ -4,25 +4,28 @@ import {
   ResizablePanel,
   ResizablePanelGroup
 } from '@/components/ui/resizable'
-import { FilePenIcon, MailOpenIcon, PhoneIcon, UserPlus, PrinterIcon, TrashIcon } from 'lucide-react'
+import { FilePenIcon, MailOpenIcon, PhoneIcon, UserPlus, TrashIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { NavBar } from '@/components/NavBar'
 import { NavBarPhone } from '@/components/navBarPhone'
 import { UserForm } from '@/components/userForm/UserForm'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 
 import { UserContext } from '@/context/user'
 import { AlertDialogDelete } from '@/components/AlertDialogDelete'
 
 export function Usuarios () {
   const { users, deleteUser } = useContext(UserContext)
+  const [loading, isLoading] = useState(false)
 
   const userData = users
 
   const handleDelete = (user) => {
+    isLoading(true)
     deleteUser(user.id)
+    isLoading(false)
   }
 
   return (
@@ -37,11 +40,6 @@ export function Usuarios () {
         <ResizablePanel defaultSize={85}>
           <div className='w-full p-8 min-h-screen'>
             <NavBarPhone title='Gestión de usuarios'>
-              <Button variant='outline'>
-                <PrinterIcon className='w-5 h-5 mr-2' />
-                Imprimir
-              </Button>
-
               <UserForm
                 title='Añadir nuevo usuario'
                 description='Complete el formulario para crear una nueva cuenta de usuario.'
@@ -119,6 +117,7 @@ export function Usuarios () {
                       deleteFunction={() => { handleDelete(user) }}
                       title='¿Estás seguro de eliminar este usuario?'
                       description='Esta acción no se puede deshacer. El usuario se eliminará permanentemente del sistema'
+                      loading={loading}
                     >
                       <Button variant='outline' size='sm' className={`text-red-500 ${user.status === 'Inactivo' ? 'bg-gray-200 border-gray-300' : ''}`}>
                         <TrashIcon className='w-4 h-4 mr-2' />

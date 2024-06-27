@@ -12,7 +12,7 @@ import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { EquipmentForm } from '../EquipmentForm/EquipmentForm'
 
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 
 import { EquipmentContext } from '@/context/equipment'
 import { StatusForm } from '../StatusForm/StatusForm'
@@ -37,6 +37,7 @@ const statusMap = {
 
 export const RowActions = ({ row }) => {
   const { deleteEquipment } = useContext(EquipmentContext)
+  const [loading, isLoading] = useState(false)
 
   const transformDataClient = (data) => {
     const fieldMapping = {
@@ -75,7 +76,9 @@ export const RowActions = ({ row }) => {
   }
 
   const handleDelete = () => {
+    isLoading(true)
     deleteEquipment(row.original.id)
+    isLoading(false)
   }
 
   const { icon, title, description } = statusMap[row.original.state] || {
@@ -133,6 +136,7 @@ export const RowActions = ({ row }) => {
             deleteFunction={handleDelete}
             title='¿Estás seguro de eliminar este equipo?'
             description='Esta acción no se puede deshacer. El equipo se eliminará permanentemente y sus datos asociados.'
+            loading={loading}
           >
             <DropdownMenuItem onSelect={(e) => { e.preventDefault() }}>
               <Trash className='h-4 w-4 mr-2' />

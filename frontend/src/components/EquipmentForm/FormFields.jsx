@@ -25,6 +25,7 @@ import { toast } from 'sonner'
 
 import { useState, useEffect, useContext } from 'react'
 import { EquipmentContext } from '@/context/equipment'
+import { Loader2, Save, X } from 'lucide-react'
 
 const formSchema = z.object({
   customer: z
@@ -100,6 +101,7 @@ export function FormFields ({ setOpen, equipment, device }) {
 
   const [showOtherInput, setShowOtherInput] = useState(false)
   const [isEdit, setIsEdit] = useState(false)
+  const [loading, isLoading] = useState(false)
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -158,6 +160,8 @@ export function FormFields ({ setOpen, equipment, device }) {
   }
 
   async function onSubmit (values) {
+    isLoading(true)
+
     if (isEdit) {
       const hasChanges =
         values.customer !== equipment.customer ||
@@ -179,8 +183,10 @@ export function FormFields ({ setOpen, equipment, device }) {
       } else {
         toast.error('No se realizó ningún cambio')
       }
+      isLoading(false)
     } else {
       createEquipment(values)
+      isLoading(false)
       setOpen(false)
     }
   }
@@ -397,8 +403,26 @@ export function FormFields ({ setOpen, equipment, device }) {
 
         </div>
         <div className='flex flex-col md:flex-row md:items-center md:justify-end gap-2'>
-          <Button type='submit' className='w-full md:w-auto'>Guardar</Button>
-          <Button type='button' variant='secondary' onClick={() => setOpen(false)}>Cancelar</Button>
+          {
+              loading
+                ? (
+                  <Button disabled>
+                    <Loader2 className='mr-2 h-4 w-4 animate-spin ' />
+                    Cargando
+                  </Button>
+                  )
+                : (
+                  <Button type='submit' className='w-full md:w-auto'>
+                    <Save className='w-4 h-4 mr-2' />
+                    Guardar
+                  </Button>
+                  )
+            }
+
+          <Button type='button' variant='secondary' onClick={() => setOpen(false)}>
+            <X className='w-4 h-4 mr-2' />
+            Cancelar
+          </Button>
         </div>
       </form>
     </Form>

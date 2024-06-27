@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Laptop, PcCase, Printer, Ban } from 'lucide-react'
+import { Laptop, PcCase, Printer, Ban, X } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -104,7 +104,10 @@ export const DetailsEquipment = ({ children, equipment }) => {
         </div>
 
         <DialogFooter>
-          <Button type='button' variant='secondary' onClick={() => setOpen(false)}>Cancelar</Button>
+          <Button type='button' variant='secondary' onClick={() => setOpen(false)}>
+            <X className='w-4 h-4 mr-2' />
+            Cerrar
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

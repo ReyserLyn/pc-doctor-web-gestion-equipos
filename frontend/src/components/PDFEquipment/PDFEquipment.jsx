@@ -148,7 +148,6 @@ export function PDFEquipment ({ equipments, setPdf }) {
             color: rgb(0, 0, 0)
           })
 
-          // Convertir la cadena de servicios a un array
           const servicesArray = services.split(',').map(service => service.trim())
 
           servicesArray.forEach(service => {
