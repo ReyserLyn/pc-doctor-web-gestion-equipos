@@ -1,7 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
 import {
   Menu,
-  Cross,
   LayoutDashboard,
   Users
 } from 'lucide-react'
@@ -23,7 +22,7 @@ export function NavBarPhone ({ children, title }) {
               className='shrink-0 md:hidden'
             >
               <Menu className='h-5 w-5' />
-              <span className='sr-only'>Toggle navigation menu</span>
+              <span className='sr-only'>Menu de navegación</span>
             </Button>
           </SheetTrigger>
 
@@ -31,7 +30,12 @@ export function NavBarPhone ({ children, title }) {
             <nav className='grid gap-2 text-lg font-medium'>
               <div className='flex h-14 items-center border-b'>
                 <div className='flex items-center gap-2 font-semibold'>
-                  <Cross className='h-6 w-6' />
+                  <img
+                    src='/img/logo-pc-doctor.png'
+                    width={40}
+                    height={40}
+                    alt='Logo'
+                  />
                   <span className=''>PcDoctor</span>
                 </div>
               </div>

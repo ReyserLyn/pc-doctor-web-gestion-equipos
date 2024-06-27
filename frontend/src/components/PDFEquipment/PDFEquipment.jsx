@@ -136,11 +136,13 @@ export function PDFEquipment ({ equipments, setPdf }) {
   return (
     <>
       {pdfUrl && (
-        <embed
+        <object
           className='min-h-full w-full'
-          src={pdfUrl}
+          data={pdfUrl}
           type='application/pdf'
-        />
+        >
+          <p>El visualizador de PDF no funciona en este dispositivo.</p>
+        </object>
       )}
     </>
   )

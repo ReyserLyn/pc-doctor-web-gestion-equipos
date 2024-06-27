@@ -27,11 +27,11 @@ export default function Login () {
         />
         <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center'>
           <img
-            src='/img/Icon-pc-doctor.jpg'
-            width={250}
-            height={250}
+            src='/img/logo-pc-doctor.png'
+            width={300}
+            height={300}
             alt='Logo'
-            className='mx-auto mb-2 rounded-lg'
+            className='mx-auto mb-2 rounded-lg bg-white'
             style={{ borderRadius: '30px' }}
           />
           <div className='text-5xl font-medium text-white'>Sistema PcDoctor</div>
@@ -45,7 +45,7 @@ export default function Login () {
         <div className='max-w-[400px] w-full p-6 bg-white rounded-lg shadow-lg m-4'>
           <div className='sm:hidden'>
             <img
-              src='/img/Icon-pc-doctor.jpg'
+              src='/img/logo-pc-doctor.png'
               width={200}
               height={200}
               alt='Logo'

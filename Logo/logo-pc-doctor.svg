@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Capa_1" data-name="Capa 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000">
+  <defs>
+    <style>
+      .cls-1 {
+        letter-spacing: 0em;
+      }
+
+      .cls-1, .cls-2, .cls-3 {
+        fill: #312783;
+      }
+
+      .cls-4, .cls-5 {
+        fill: #e30613;
+      }
+
+      .cls-4, .cls-6 {
+        stroke-width: 0px;
+      }
+
+      .cls-7 {
+        font-family: Nexa-Heavy, Nexa;
+        font-size: 196.28px;
+        font-weight: 800;
+      }
+
+      .cls-2 {
+        letter-spacing: 0em;
+      }
+
+      .cls-8 {
+        letter-spacing: 0em;
+      }
+
+      .cls-3 {
+        letter-spacing: -.02em;
+      }
+
+      .cls-6, .cls-9 {
+        fill: #1d1d1b;
+      }
+
+      .cls-9 {
+        font-family: Nexa-Regular, Nexa;
+        font-size: 68.95px;
+      }
+    </style>
+  </defs>
+  <text class="cls-9" transform="translate(50 857.95)"><tspan class="cls-8" x="0" y="0">S</tspan><tspan x="44.82" y="0">istemas y Servicios E.I.R.L.</tspan></text>
+  <text/>
+  <text class="cls-7" transform="translate(35.01 794.75)"><tspan class="cls-5" x="0" y="0">PC</tspan><tspan class="cls-1" x="273.81" y="0">D</tspan><tspan class="cls-2" x="420.43" y="0">octo</tspan><tspan class="cls-3" x="839.88" y="0">r</tspan></text>
+  <g>
+    <path class="cls-4" d="M728.28,154.78c-16.5-16.5-48.51-20.46-93.56-8.41,29.47-6.12,51.86-3.13,63.27,10.53,33.26,39.85-39.54,155.41-162.6,258.12-123.06,102.71-249.78,153.67-283.04,113.83-22.07-38.07,21.93-106.07,21.93-106.07,0,0-71.5,95.5-34,133s182.71.93,318-110c135.29-110.93,206-257,170-291Z"/>
+    <path class="cls-6" d="M603.01,577.78c1.1,0,1.99.89,1.99,1.99v12.01c0,4.97-4.03,9-9,9h-179.01c-6.07,0-10.99-4.92-10.99-10.99v-10.02c0-1.1.89-1.99,1.99-1.99h-172.49v24c0,13.25,10.75,24,24,24h492c13.25,0,24-10.75,24-24v-24h-172.49Z"/>
+    <path class="cls-4" d="M590.5,347.94v-37.16h-40v-64h-84v64h-49v101h49v40.14c20.75-14.33,41.87-30.36,62.88-47.9,22.11-18.45,42.58-37.32,61.12-56.08Z"/>
+    <rect class="cls-6" x="224.5" y="110.78" width="11" height="12"/>
+    <rect class="cls-6" x="232.5" y="133.78" width="7" height="9"/>
+    <rect class="cls-6" x="241.5" y="118.78" width="10" height="12"/>
+    <rect class="cls-6" x="258.5" y="127.78" width="12" height="14"/>
+    <rect class="cls-6" x="243.5" y="146.78" width="11" height="13"/>
+    <rect class="cls-6" x="246.5" y="168.78" width="21" height="23"/>
+    <polygon class="cls-6" points="312.5 162.78 312.5 199.78 283.5 199.78 283.5 236.78 336.5 236.78 336.5 162.78 312.5 162.78"/>
+    <polygon class="cls-6" points="312.5 523.78 312.5 516.78 312.27 516.78 312.27 267.78 283 267.78 283 523.78 312.5 523.78"/>
+    <path class="cls-6" d="M698.73,324.95v191.83h-204.08c-22.83,13.97-45.28,25.8-66.79,35.5h300.14v-276.17c-7.95,15.52-17.76,31.95-29.27,48.84Z"/>
+    <path class="cls-6" d="M692.87,169.28h-332.37v35.5h329.54c4.02-13.67,5.06-25.67,2.83-35.5Z"/>
+  </g>
+</svg>

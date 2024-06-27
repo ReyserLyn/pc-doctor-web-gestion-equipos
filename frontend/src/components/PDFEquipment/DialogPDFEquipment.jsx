@@ -3,7 +3,6 @@ import { Dialog, DialogTrigger, DialogContent } from '@/components/ui/dialog'
 import { Button } from '../ui/button'
 import { PDFEquipment } from './PDFEquipment'
 
-// Función para descargar una URL como archivo PDF
 function downloadBlob (url, filename) {
   const a = document.createElement('a')
   a.href = url
