@@ -5,10 +5,14 @@ import { PDFDocument, rgb, StandardFonts } from 'pdf-lib'
 export function PDFEquipment ({ equipments, setPdf }) {
   const [pdfUrl, setPdfUrl] = useState(null)
 
+  function formatNumberToSixDigits (number) {
+    return String(number).padStart(6, '0')
+  }
+
   async function modifyPdf () {
     try {
-      const url = './ContradoPcDoctor.pdf'
-      const existingPdfBytes = await fetch(url).then(res => res.arrayBuffer())
+      const url = './ContratoPcDoctor.pdf'
+      const existingPdfBytes = await fetch(url).then((res) => res.arrayBuffer())
 
       const pdfDoc = await PDFDocument.create()
       const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica)
@@ -26,14 +30,40 @@ export function PDFEquipment ({ equipments, setPdf }) {
           const [pageReverse] = await pdfDoc.copyPages(template, [1])
           const { height } = page.getSize()
 
-          const { customer, phone, reception_date, brand, delivery_date, device, entry_condition, exit_condition, model } = equipment
+          const { rowid, customer, phone, reception_date, brand, delivery_date, device, entry_condition, exit_condition, model, services } = equipment
           const [fechaRecepcion, horaRecepcion] = reception_date.split(' ')
           const [fechaEntrega, horaEntrega] = delivery_date.split(' ')
+
+          const serviceCoordinates = {
+            Mantenimiento: { x: 133, y: height - 349 },
+            Internet: { x: 239, y: height - 349 },
+            Windows: { x: 385, y: height - 349 },
+
+            Limpieza: { x: 133, y: height - 364 },
+            'Recarga Tintas': { x: 239, y: height - 364 },
+            Juegos: { x: 385, y: height - 364 },
+
+            Reparación: { x: 133, y: height - 379 },
+            Programas: { x: 239, y: height - 379 },
+            Drivers: { x: 385, y: height - 379 },
+
+            Formateo: { x: 133, y: height - 394 },
+            Antivirus: { x: 239, y: height - 394 },
+            Actualizaciones: { x: 385, y: height - 394 }
+          }
+
+          page.drawText(formatNumberToSixDigits(rowid), {
+            x: 353,
+            y: height - 163,
+            size: 11,
+            font: helveticaFont,
+            color: rgb(0, 0, 0)
+          })
 
           page.drawText(customer, {
             x: 69,
             y: height - 189,
-            size: 11,
+            size: 10,
             font: helveticaFont,
             color: rgb(0, 0, 0)
           })
@@ -41,7 +71,7 @@ export function PDFEquipment ({ equipments, setPdf }) {
           page.drawText(phone, {
             x: 304,
             y: height - 189,
-            size: 11,
+            size: 10,
             font: helveticaFont,
             color: rgb(0, 0, 0)
           })
@@ -49,7 +79,7 @@ export function PDFEquipment ({ equipments, setPdf }) {
           page.drawText(fechaRecepcion, {
             x: 60,
             y: height - 207,
-            size: 11,
+            size: 10,
             font: helveticaFont,
             color: rgb(0, 0, 0)
           })
@@ -57,7 +87,7 @@ export function PDFEquipment ({ equipments, setPdf }) {
           page.drawText(horaRecepcion, {
             x: 182,
             y: height - 207,
-            size: 11,
+            size: 10,
             font: helveticaFont,
             color: rgb(0, 0, 0)
           })
@@ -65,23 +95,23 @@ export function PDFEquipment ({ equipments, setPdf }) {
           page.drawText(device, {
             x: 89,
             y: height - 245,
-            size: 11,
+            size: 10,
             font: helveticaFont,
             color: rgb(0, 0, 0)
           })
 
           page.drawText(brand, {
-            x: 191,
+            x: 208,
             y: height - 245,
-            size: 11,
+            size: 10,
             font: helveticaFont,
             color: rgb(0, 0, 0)
           })
 
           page.drawText(model, {
-            x: 302,
+            x: 330,
             y: height - 245,
-            size: 11,
+            size: 10,
             font: helveticaFont,
             color: rgb(0, 0, 0)
           })
@@ -89,7 +119,7 @@ export function PDFEquipment ({ equipments, setPdf }) {
           page.drawText(entry_condition, {
             x: 24,
             y: height - 425,
-            size: 11,
+            size: 10,
             font: helveticaFont,
             color: rgb(0, 0, 0)
           })
@@ -97,7 +127,7 @@ export function PDFEquipment ({ equipments, setPdf }) {
           page.drawText(exit_condition, {
             x: 24,
             y: height - 475,
-            size: 11,
+            size: 10,
             font: helveticaFont,
             color: rgb(0, 0, 0)
           })
@@ -105,7 +135,7 @@ export function PDFEquipment ({ equipments, setPdf }) {
           page.drawText(fechaEntrega, {
             x: 60,
             y: height - 512,
-            size: 11,
+            size: 10,
             font: helveticaFont,
             color: rgb(0, 0, 0)
           })
@@ -113,9 +143,17 @@ export function PDFEquipment ({ equipments, setPdf }) {
           page.drawText(horaEntrega || 'Pendiente', {
             x: 182,
             y: height - 512,
-            size: 11,
+            size: 10,
             font: helveticaFont,
             color: rgb(0, 0, 0)
+          })
+
+          // Convertir la cadena de servicios a un array
+          const servicesArray = services.split(',').map(service => service.trim())
+
+          servicesArray.forEach(service => {
+            const { x, y } = serviceCoordinates[service]
+            page.drawText('×', { x, y, size: 20, color: rgb(0, 0, 0) })
           })
 
           pdfDoc.addPage(page)
