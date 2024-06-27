@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import * as crypto from 'crypto'
 import { DateTime } from 'luxon'
 import dotenv from 'dotenv'
@@ -15,20 +16,43 @@ export class EquipmentModel {
     const {
       customer,
       phone,
-      device_id, // eslint-disable-line camelcase
+      device_id,
       brand,
       model,
-      entry_condition, // eslint-disable-line camelcase
+      entry_condition,
       services
     } = equipment
 
     const id = crypto.randomUUID()
 
     const now = DateTime.now().setZone('America/Lima')
-    const reception_date = now.toFormat('dd/MM/yyyy HH:mm') // eslint-disable-line camelcase
-    const delivery_date = 'Pendiente' // eslint-disable-line camelcase
-    const state_id = 1 // eslint-disable-line camelcase
-    const exit_condition = 'Pendiente' // eslint-disable-line camelcase
+    const reception_date = now.toFormat('dd/MM/yyyy HH:mm')
+    const delivery_date = 'Pendiente'
+    const state_id = 1
+    const exit_condition = 'Pendiente'
+
+    let insertedDeviceId = device_id
+
+    if (!['1', '2', '3'].includes(device_id)) {
+      try {
+        const existingDevice = await db.execute({
+          sql: 'SELECT id FROM devices_equipment WHERE name = ?',
+          args: [device_id]
+        })
+
+        if (existingDevice.rows[0]) {
+          insertedDeviceId = existingDevice.rows[0].id.toString()
+        } else {
+          const result = await db.execute({
+            sql: 'INSERT INTO devices_equipment (name) VALUES (?)',
+            args: [device_id]
+          })
+          insertedDeviceId = result.lastInsertRowid.toString()
+        }
+      } catch (error) {
+        console.error('Error al insertar o consultar dispositivo', error)
+      }
+    }
 
     const query = `
       INSERT INTO equipments (
@@ -49,8 +73,7 @@ export class EquipmentModel {
     try {
       await db.execute({
         sql: query,
-        // eslint-disable-next-line camelcase
-        args: [id, customer, phone, device_id, brand, model, entry_condition, reception_date, delivery_date, state_id, exit_condition]
+        args: [id, customer, phone, insertedDeviceId, brand, model, entry_condition, reception_date, delivery_date, state_id, exit_condition]
       })
 
       await Promise.all(services.map(async (serviceName) => {
@@ -70,11 +93,12 @@ export class EquipmentModel {
         }
       }))
     } catch (error) {
-      console.error('Error al crear equipo', error)
+      console.error('Error al crear equipo', insertedDeviceId, error)
     }
 
     const createdEquipmentQuery = `
-      SELECT 
+      SELECT
+        e.rowid,
         e.customer,
         e.phone,
         de.name AS device,
@@ -113,6 +137,7 @@ export class EquipmentModel {
   static async getAll () {
     const query = `
       SELECT
+        e.rowid,
         e.id,
         e.customer,
         e.phone,
@@ -151,6 +176,7 @@ export class EquipmentModel {
   static async getById ({ id }) {
     const query = `
       SELECT 
+        e.rowid,
         e.id,
         e.customer,
         e.phone,
@@ -235,7 +261,6 @@ export class EquipmentModel {
     try {
       await db.execute({
         sql: query,
-        // eslint-disable-next-line camelcase
         args: [state_id, exit_condition, id]
       })
 
@@ -253,9 +278,8 @@ export class EquipmentModel {
     const existingEquipment = existingEquipmentResult.rows[0]
     if (!existingEquipment) return null
 
-    const state_id = 3 // eslint-disable-line camelcase
-
-    const { delivery_date } = date // eslint-disable-line camelcase
+    const state_id = 3
+    const { delivery_date } = date
 
     const query = `
     UPDATE equipments
@@ -268,7 +292,6 @@ export class EquipmentModel {
     try {
       await db.execute({
         sql: query,
-        // eslint-disable-next-line camelcase
         args: [state_id, delivery_date, id]
       })
 
@@ -289,11 +312,11 @@ export class EquipmentModel {
 
     const {
       customer,
-      device_id, // eslint-disable-line camelcase
+      device_id,
       brand,
       model,
       phone,
-      entry_condition, // eslint-disable-line camelcase
+      entry_condition,
       services
     } = equipment
 
@@ -308,11 +331,34 @@ export class EquipmentModel {
         entry_condition = ?
       WHERE id = ?
     `
+
+    let insertedDeviceId = device_id
+
+    if (!['1', '2', '3'].includes(device_id)) {
+      try {
+        const existingDevice = await db.execute({
+          sql: 'SELECT id FROM devices_equipment WHERE name = ?',
+          args: [device_id]
+        })
+
+        if (existingDevice.rows[0]) {
+          insertedDeviceId = existingDevice.rows[0].id.toString()
+        } else {
+          const result = await db.execute({
+            sql: 'INSERT INTO devices_equipment (name) VALUES (?)',
+            args: [device_id]
+          })
+          insertedDeviceId = result.lastInsertRowid.toString()
+        }
+      } catch (error) {
+        console.error('Error al insertar o consultar dispositivo', error)
+      }
+    }
+
     try {
       await db.execute({
         sql: query,
-        // eslint-disable-next-line camelcase
-        args: [customer, device_id, brand, model, phone, entry_condition, id]
+        args: [customer, insertedDeviceId, brand, model, phone, entry_condition, id]
       })
       await db.execute({
         sql: 'DELETE FROM equipment_services WHERE equipment_id = ?',
@@ -341,6 +387,7 @@ export class EquipmentModel {
 
     const updatedEquipmentQuery = `
       SELECT 
+        e.rowid,
         e.id,
         e.customer,
         e.phone,
