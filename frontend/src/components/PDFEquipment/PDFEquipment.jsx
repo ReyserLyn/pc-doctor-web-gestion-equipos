@@ -7,7 +7,7 @@ export function PDFEquipment ({ equipments, setPdf }) {
 
   async function modifyPdf () {
     try {
-      const url = './equipment.pdf'
+      const url = './ContradoPcDoctor.pdf'
       const existingPdfBytes = await fetch(url).then(res => res.arrayBuffer())
 
       const pdfDoc = await PDFDocument.create()
@@ -16,11 +16,14 @@ export function PDFEquipment ({ equipments, setPdf }) {
       if (equipments.length === 0) {
         const template = await PDFDocument.load(existingPdfBytes)
         const [page] = await pdfDoc.copyPages(template, [0])
+        const [pageReverse] = await pdfDoc.copyPages(template, [1])
         pdfDoc.addPage(page)
+        pdfDoc.addPage(pageReverse)
       } else {
         for (const equipment of equipments) {
           const template = await PDFDocument.load(existingPdfBytes)
           const [page] = await pdfDoc.copyPages(template, [0])
+          const [pageReverse] = await pdfDoc.copyPages(template, [1])
           const { height } = page.getSize()
 
           const { customer, phone, reception_date, brand, delivery_date, device, entry_condition, exit_condition, model } = equipment
@@ -116,6 +119,7 @@ export function PDFEquipment ({ equipments, setPdf }) {
           })
 
           pdfDoc.addPage(page)
+          pdfDoc.addPage(pageReverse)
         }
       }
 
