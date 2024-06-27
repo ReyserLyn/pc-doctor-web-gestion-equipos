@@ -58,16 +58,19 @@ const formSchema = z.object({
 
 const servicesFetch = [
   {
-    name: 'Mantenimiento Interno'
+    name: 'Mantenimiento'
   },
   {
-    name: 'Mantenimiento Lógico'
+    name: 'Internet'
   },
   {
-    name: 'Activaciones'
+    name: 'Windows'
   },
   {
-    name: 'Programas'
+    name: 'Limpieza'
+  },
+  {
+    name: 'Recarga Tintas'
   },
   {
     name: 'Juegos'
@@ -76,10 +79,16 @@ const servicesFetch = [
     name: 'Reparación'
   },
   {
+    name: 'Programas'
+  },
+  {
     name: 'Drivers'
   },
   {
     name: 'Formateo'
+  },
+  {
+    name: 'Antivirus'
   },
   {
     name: 'Actualizaciones'
@@ -101,7 +110,7 @@ export function FormFields ({ setOpen, equipment, device }) {
       model: '',
       device_id: '',
       entry_condition: '',
-      services: ['Mantenimiento Interno', 'Activaciones']
+      services: ['Mantenimiento', 'Limpieza']
     }
   })
 
@@ -117,6 +126,11 @@ export function FormFields ({ setOpen, equipment, device }) {
         services: equipment.services ? equipment.services.split(', ') : ['Mantenimiento Interno', 'Activaciones']
       })
 
+      if (getDeviceId(device) === '4') {
+        form.setValue('device_id', device)
+        setShowOtherInput(true)
+      }
+
       setIsEdit(true)
     }
   }, [equipment])
@@ -130,12 +144,12 @@ export function FormFields ({ setOpen, equipment, device }) {
       case 'Impresora':
         return '3'
       default:
-        return ''
+        return '4'
     }
   }
 
   const handleSelectChange = (value) => {
-    if (value === 'Otro') {
+    if (value === '4') {
       form.setValue('device_id', '')
       setShowOtherInput(true)
     } else {
@@ -145,20 +159,25 @@ export function FormFields ({ setOpen, equipment, device }) {
 
   async function onSubmit (values) {
     if (isEdit) {
-      const hasChanges = (
+      const hasChanges =
         values.customer !== equipment.customer ||
         values.phone !== equipment.phone ||
-        values.device_id !== getDeviceId(equipment.device) ||
         values.brand !== equipment.brand ||
         values.model !== equipment.model ||
         values.entry_condition !== equipment.entry_condition ||
         !arraysEqual(values.services, equipment.services.split(', '))
-      )
 
-      if (hasChanges) {
+      let hasChangesDevice
+      if (getDeviceId(device) === '4') {
+        hasChangesDevice = values.device_id !== getDeviceId(device)
+      } else {
+        hasChangesDevice = values.device_id !== equipment.device
+      }
+
+      if (hasChanges && hasChangesDevice) {
         editEquipment(values, equipment.id)
       } else {
-        toast.error('No se realizó ningun cambio')
+        toast.error('No se realizó ningún cambio')
       }
     } else {
       createEquipment(values)
@@ -246,7 +265,7 @@ export function FormFields ({ setOpen, equipment, device }) {
                       <SelectItem key={1} value='1'>Laptop</SelectItem>
                       <SelectItem key={2} value='2'>Computadora</SelectItem>
                       <SelectItem key={3} value='3'>Impresora</SelectItem>
-                      <SelectItem key={4} value='Otro'>Otro</SelectItem>
+                      <SelectItem key={4} value='4'>Otro</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -290,7 +309,7 @@ export function FormFields ({ setOpen, equipment, device }) {
                 <div className='space-y-2'>
                   <FormField
                     control={form.control}
-                    name='device_id_input'
+                    name='device_id'
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Otro dispositivo</FormLabel>

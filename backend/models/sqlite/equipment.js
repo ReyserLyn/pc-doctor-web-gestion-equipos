@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import Database from 'better-sqlite3'
 import crypto from 'node:crypto'
 import { DateTime } from 'luxon'
@@ -9,20 +10,37 @@ export class EquipmentModel {
     const {
       customer,
       phone,
-      device_id, // eslint-disable-line camelcase
+      device_id,
       brand,
       model,
-      entry_condition, // eslint-disable-line camelcase
+      entry_condition,
       services
     } = equipment
 
     const id = crypto.randomUUID()
 
     const now = DateTime.now().setZone('America/Lima')
-    const reception_date = now.toFormat('dd/MM/yyyy HH:mm') // eslint-disable-line camelcase
-    const delivery_date = 'Pendiente' // eslint-disable-line camelcase
-    const state_id = 1 // eslint-disable-line camelcase
-    const exit_condition = 'Pendiente' // eslint-disable-line camelcase
+    const reception_date = now.toFormat('dd/MM/yyyy HH:mm')
+    const delivery_date = 'Pendiente'
+    const state_id = 1
+    const exit_condition = 'Pendiente'
+
+    let insertedDeviceId = device_id
+
+    if (!['1', '2', '3'].includes(device_id)) {
+      try {
+        const existingDevice = await db.prepare('SELECT id FROM devices_equipment WHERE name = ?').get(device_id)
+
+        if (existingDevice) {
+          insertedDeviceId = existingDevice.id.toString()
+        } else {
+          const result = await db.prepare('INSERT INTO devices_equipment (name) VALUES (?)').run(device_id)
+          insertedDeviceId = result.lastInsertRowid.toString()
+        }
+      } catch (error) {
+        console.error('Error al insertar o consultar dispositivo', error)
+      }
+    }
 
     const query = `
       INSERT INTO equipments (
@@ -41,7 +59,19 @@ export class EquipmentModel {
     `
 
     try {
-      await db.prepare(query).run(id, customer, phone, device_id, brand, model, entry_condition, reception_date, delivery_date, state_id, exit_condition)
+      await db.prepare(query).run(
+        id,
+        customer,
+        phone,
+        insertedDeviceId,
+        brand,
+        model,
+        entry_condition,
+        reception_date,
+        delivery_date,
+        state_id,
+        exit_condition
+      )
 
       await Promise.all(services.map(async (serviceName) => {
         const service = await db.prepare('SELECT id FROM services_equipment WHERE name = ?').get(serviceName.trim())
@@ -54,10 +84,12 @@ export class EquipmentModel {
       }))
     } catch (error) {
       console.error('Error al crear equipo', error)
+      throw new Error('Failed to create equipment')
     }
 
     const createdEquipmentQuery = `
       SELECT 
+        e.rowid,
         e.customer,
         e.phone,
         de.name AS device,
@@ -92,6 +124,7 @@ export class EquipmentModel {
   static async getAll () {
     const query = `
       SELECT
+        e.rowid,
         e.id,
         e.customer,
         e.phone,
@@ -125,7 +158,8 @@ export class EquipmentModel {
 
   static async getById ({ id }) {
     const query = `
-      SELECT 
+      SELECT
+        e.rowid,
         e.id,
         e.customer,
         e.phone,
@@ -249,8 +283,26 @@ export class EquipmentModel {
         entry_condition = ?
       WHERE id = ?
     `
+
+    let insertedDeviceId = device_id
+
+    if (!['1', '2', '3'].includes(device_id)) {
+      try {
+        const existingDevice = await db.prepare('SELECT id FROM devices_equipment WHERE name = ?').get(device_id)
+
+        if (existingDevice) {
+          insertedDeviceId = existingDevice.id.toString()
+        } else {
+          const result = await db.prepare('INSERT INTO devices_equipment (name) VALUES (?)').run(device_id)
+          insertedDeviceId = result.lastInsertRowid.toString()
+        }
+      } catch (error) {
+        console.error('Error al insertar o consultar dispositivo', error)
+      }
+    }
+
     try {
-      await db.prepare(query).run(customer, device_id, brand, model, phone, entry_condition, id)
+      await db.prepare(query).run(customer, insertedDeviceId, brand, model, phone, entry_condition, id)
       await db.prepare('DELETE FROM equipment_services WHERE equipment_id = ?').run(id)
 
       await Promise.all(services.map(async (serviceName) => {
@@ -265,6 +317,7 @@ export class EquipmentModel {
 
     const updatedEquipmentQuery = `
       SELECT 
+        e.rowid,
         e.id,
         e.customer,
         e.phone,

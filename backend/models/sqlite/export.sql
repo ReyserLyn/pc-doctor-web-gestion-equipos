@@ -20,9 +20,9 @@ CREATE TABLE IF NOT EXISTS "users" (
 	"role_id"	INTEGER,
 	"status_id"	INTEGER,
 	"created_at"	TEXT NOT NULL,
-	PRIMARY KEY("id"),
+	FOREIGN KEY("status_id") REFERENCES "state_user"("id"),
 	FOREIGN KEY("role_id") REFERENCES "role_user"("id"),
-	FOREIGN KEY("status_id") REFERENCES "state_user"("id")
+	PRIMARY KEY("id")
 );
 CREATE TABLE IF NOT EXISTS "devices_equipment" (
 	"id"	INTEGER,
@@ -42,9 +42,9 @@ CREATE TABLE IF NOT EXISTS "services_equipment" (
 CREATE TABLE IF NOT EXISTS "equipment_services" (
 	"equipment_id"	TEXT,
 	"service_id"	INTEGER,
-	PRIMARY KEY("equipment_id","service_id"),
 	FOREIGN KEY("equipment_id") REFERENCES "equipments"("id"),
-	FOREIGN KEY("service_id") REFERENCES "services_equipment"("id")
+	FOREIGN KEY("service_id") REFERENCES "services_equipment"("id"),
+	PRIMARY KEY("equipment_id","service_id")
 );
 CREATE TABLE IF NOT EXISTS "equipments" (
 	"id"	TEXT NOT NULL UNIQUE,
@@ -58,9 +58,9 @@ CREATE TABLE IF NOT EXISTS "equipments" (
 	"state_id"	INTEGER,
 	"entry_condition"	TEXT,
 	"exit_condition"	TEXT,
-	PRIMARY KEY("id"),
 	FOREIGN KEY("device_id") REFERENCES "devices_equipment"("id"),
-	FOREIGN KEY("state_id") REFERENCES "state_equipment"("id")
+	FOREIGN KEY("state_id") REFERENCES "state_equipment"("id"),
+	PRIMARY KEY("id")
 );
 INSERT INTO "role_user" ("id","name") VALUES (1,'Administrador'),
  (2,'Técnico');
@@ -73,13 +73,16 @@ INSERT INTO "devices_equipment" ("id","name") VALUES (1,'Laptop'),
 INSERT INTO "state_equipment" ("id","name") VALUES (1,'En reparación'),
  (2,'Reparado'),
  (3,'Entregado');
-INSERT INTO "services_equipment" ("id","name") VALUES (1,'Mantenimiento Interno'),
- (2,'Mantenimiento Lógico'),
- (3,'Activaciones'),
- (4,'Programas'),
- (5,'Juegos'),
- (6,'Reparación'),
- (7,'Drivers'),
- (8,'Formateo'),
- (9,'Actualizaciones');
+INSERT INTO "services_equipment" ("id","name") VALUES (1,'Mantenimiento'),
+ (2,'Internet'),
+ (3,'Windows'),
+ (4,'Limpieza'),
+ (5,'Recarga Tintas'),
+ (6,'Juegos'),
+ (7,'Reparación'),
+ (8,'Programas'),
+ (9,'Actualizaciones'),
+ (10,'Formateo'),
+ (11,'Antivirus'),
+ (12,'Actualizaciones');
 COMMIT;
