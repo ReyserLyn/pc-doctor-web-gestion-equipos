@@ -13,8 +13,8 @@ import { DataTable } from '@/components/DataTable/DataTable'
 import { NavBar } from '@/components/NavBar'
 import { NavBarPhone } from '@/components/navBarPhone'
 
-import { PDFEquipment } from '@/components/PDFEquipment'
 import { useState } from 'react'
+import { DialogPDFEquipment } from '@/components/PDFEquipment/DialogPDFEquipment'
 
 export function Dashboard () {
   const [selectedRows, setSelectedRows] = useState([])
@@ -33,12 +33,12 @@ export function Dashboard () {
 
             <NavBarPhone title='Sistema PcDoctor'>
 
-              <PDFEquipment equipments={selectedRows}>
+              <DialogPDFEquipment equipments={selectedRows}>
                 <Button variant='outline'>
                   <PrinterIcon className='w-5 h-5 mr-2' />
                   Imprimir
                 </Button>
-              </PDFEquipment>
+              </DialogPDFEquipment>
 
               <EquipmentForm
                 title='Nuevo Equipo'
