@@ -10,7 +10,7 @@ export function NavBar () {
       <div className='flex h-[60px] items-center border-b px-6'>
         <div className='flex items-center gap-2 font-semibold'>
           <img
-            src='/img/logo-pc-doctor.png'
+            src='/img/logo-pc-doctor.webp'
             width={40}
             height={40}
             alt='Logo'

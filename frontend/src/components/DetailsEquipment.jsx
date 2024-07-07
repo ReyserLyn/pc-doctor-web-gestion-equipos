@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useContext, useEffect } from 'react'
 import { Laptop, PcCase, Printer, Ban, X } from 'lucide-react'
 import {
   Dialog,
@@ -8,11 +8,26 @@ import {
 } from '@/components/ui/dialog'
 import { Button } from './ui/button'
 
-export const DetailsEquipment = ({ children, equipment }) => {
+import { EquipmentContext } from '@/context/equipment'
+
+export const DetailsEquipment = ({ children, equipment, isWarranty }) => {
+  const { getByIdEquipment } = useContext(EquipmentContext)
   const [open, setOpen] = useState(false)
+  const [equipmentNew, setEquipmentNew] = useState(equipment)
+
+  useEffect(() => {
+    const fetchEquipment = async () => {
+      if (isWarranty && equipment.warranty !== 0) {
+        const fetchedEquipment = await getByIdEquipment(equipment.warranty)
+        setEquipmentNew(fetchedEquipment)
+      }
+    }
+
+    fetchEquipment()
+  }, [equipment, getByIdEquipment])
 
   const renderDeviceIcon = () => {
-    switch (equipment.device) {
+    switch (equipmentNew.device) {
       case 'Laptop':
         return <Laptop className='h-16 w-16' />
       case 'Computadora':
@@ -37,67 +52,67 @@ export const DetailsEquipment = ({ children, equipment }) => {
             {renderDeviceIcon()}
             <div className='grid gap-1'>
               <div className='text-2xl font-bold'>Detalles de este equipo</div>
-              <div className='text-sm text-muted-foreground'>Id: {equipment.id}</div>
+              <div className='text-sm text-muted-foreground'>Id: {equipmentNew.id}</div>
             </div>
           </div>
 
           <div className='grid gap-4 sm:grid-cols-2'>
             <div className='grid grid-cols-[150px_1fr] items-center gap-4'>
               <div className='font-medium'>Nombre Completo:</div>
-              <div>{equipment.customer}</div>
+              <div>{equipmentNew.customer}</div>
             </div>
 
             <div className='grid grid-cols-[150px_1fr] items-center gap-4'>
               <div className='font-medium'>Teléfono:</div>
-              <div>{equipment.phone}</div>
+              <div>{equipmentNew.phone}</div>
             </div>
 
             <div className='grid grid-cols-[150px_1fr] items-center gap-4'>
               <div className='font-medium'>Dispostivo:</div>
-              <div>{equipment.device}</div>
+              <div>{equipmentNew.device}</div>
             </div>
 
             <div className='grid grid-cols-[150px_1fr] items-center gap-4'>
               <div className='font-medium'>Marca:</div>
-              <div>{equipment.brand}</div>
+              <div>{equipmentNew.brand}</div>
             </div>
 
             <div className='grid grid-cols-[150px_1fr] items-center gap-4'>
               <div className='font-medium'>Modelo:</div>
-              <div>{equipment.model}</div>
+              <div>{equipmentNew.model}</div>
             </div>
 
             <div className='grid grid-cols-[150px_1fr] items-center gap-4'>
               <div className='font-medium'>Estado:</div>
-              <div>{equipment.state}</div>
+              <div>{equipmentNew.state}</div>
             </div>
 
             <div className='col-span-full grid grid-cols-[150px_1fr] items-center gap-4'>
               <div className='font-medium'>Servicios:</div>
-              <div>{equipment.services}</div>
+              <div>{equipmentNew.services}</div>
             </div>
 
             <div className='grid grid-cols-[150px_1fr] items-center gap-4'>
               <div className='font-medium'>Fecha de recepción:</div>
-              <div>{equipment.reception_date}</div>
+              <div>{equipmentNew.reception_date}</div>
             </div>
 
             <div className='grid grid-cols-[150px_1fr] items-center gap-4'>
               <div className='font-medium'>Fecha de entrega:</div>
-              <div>{equipment.delivery_date}</div>
+              <div>{equipmentNew.delivery_date}</div>
             </div>
 
             <div className='grid grid-rows-[24px_1fr] gap-4'>
               <div className='font-medium'>Como entró:</div>
               <div className='text-muted-foreground'>
-                {equipment.entry_condition}
+                {equipmentNew.entry_condition}
               </div>
             </div>
 
             <div className='grid grid-rows-[24px_1fr] gap-4'>
               <div className='font-medium'>Como salió:</div>
               <div className='text-muted-foreground'>
-                {equipment.exit_condition}
+                {equipmentNew.exit_condition}
               </div>
             </div>
           </div>

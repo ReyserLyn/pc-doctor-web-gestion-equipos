@@ -14,7 +14,8 @@ export class EquipmentModel {
       brand,
       model,
       entry_condition,
-      services
+      services,
+      warranty
     } = equipment
 
     const id = crypto.randomUUID()
@@ -54,8 +55,9 @@ export class EquipmentModel {
         reception_date,
         delivery_date,
         state_id,
-        exit_condition
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        exit_condition,
+        warranty
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `
 
     try {
@@ -70,7 +72,8 @@ export class EquipmentModel {
         reception_date,
         delivery_date,
         state_id,
-        exit_condition
+        exit_condition,
+        warranty
       )
 
       await Promise.all(services.map(async (serviceName) => {
@@ -100,6 +103,7 @@ export class EquipmentModel {
         se.name AS state,
         e.entry_condition,
         e.exit_condition,
+        e.warranty,
         GROUP_CONCAT(se2.name, ', ') AS services
       FROM 
         equipments e
@@ -136,6 +140,7 @@ export class EquipmentModel {
         se.name AS state,
         e.entry_condition,
         e.exit_condition,
+        e.warranty,
         GROUP_CONCAT(se2.name, ', ') AS services
       FROM 
         equipments e
@@ -171,6 +176,7 @@ export class EquipmentModel {
         se.name AS state,
         e.entry_condition,
         e.exit_condition,
+        e.warranty,
         GROUP_CONCAT(se2.name, ', ') AS services
       FROM 
         equipments e
@@ -212,8 +218,8 @@ export class EquipmentModel {
     const existingEquipment = await db.prepare('SELECT customer, device_id FROM equipments WHERE id = ?').get(id)
     if (!existingEquipment) return null
 
-    const { exit_condition } = description // eslint-disable-line camelcase
-    const state_id = 2 // eslint-disable-line camelcase
+    const { exit_condition } = description
+    const state_id = 2
 
     const query = `
     UPDATE equipments
@@ -236,9 +242,9 @@ export class EquipmentModel {
     const existingEquipment = await db.prepare('SELECT customer, device_id FROM equipments WHERE id = ?').get(id)
     if (!existingEquipment) return null
 
-    const state_id = 3 // eslint-disable-line camelcase
+    const state_id = 3
 
-    const { delivery_date } = date // eslint-disable-line camelcase
+    const { delivery_date } = date
 
     const query = `
     UPDATE equipments

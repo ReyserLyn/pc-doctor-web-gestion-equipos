@@ -1,4 +1,4 @@
-import { ChevronDown, ClipboardCopy, ClipboardList, Trash, FilePenLine, CircleCheckBig, Package, PackageCheck, FileSpreadsheet } from 'lucide-react'
+import { ChevronDown, ShieldPlus, ClipboardCopy, ClipboardList, Trash, FilePenLine, CircleCheckBig, Package, PackageCheck, FileSpreadsheet } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -89,6 +89,7 @@ export const RowActions = ({ row }) => {
   }
 
   const isDelivered = row.original.state === 'Entregado'
+  const isWarranty = row.original.warranty !== 0
 
   return (
     <div className='flex items-center justify-center'>
@@ -120,6 +121,39 @@ export const RowActions = ({ row }) => {
 
           </DetailsEquipment>
 
+          {
+            isWarranty &&
+              <DetailsEquipment isWarranty equipment={row.original}>
+                <DropdownMenuItem onSelect={(e) => { e.preventDefault() }}>
+                  <FileSpreadsheet className='h-4 w-4 mr-2' />
+                  Ver equipo pre-Garantía
+                </DropdownMenuItem>
+
+              </DetailsEquipment>
+          }
+
+          {
+            isDelivered
+              ? (
+
+                <EquipmentForm
+                  title='Ingresar equipo por garantía'
+                  description='Completa el formulario para ingresar una nueva entrada por garantía de este equipo'
+                  equipment={row.original}
+                  device={row.original.device}
+                >
+                  <DropdownMenuItem onSelect={(e) => { e.preventDefault() }}>
+                    <ShieldPlus className='h-4 w-4 mr-2' />
+                    Garantía
+                  </DropdownMenuItem>
+
+                </EquipmentForm>
+
+                )
+              : ('')
+
+          }
+
           <EquipmentForm
             title='Editar equipo'
             description='Completa el formulario para modificar este equipo.'
@@ -137,6 +171,7 @@ export const RowActions = ({ row }) => {
             title='¿Estás seguro de eliminar este equipo?'
             description='Esta acción no se puede deshacer. El equipo se eliminará permanentemente y sus datos asociados.'
             loading={loading}
+            isLoading={isLoading}
           >
             <DropdownMenuItem onSelect={(e) => { e.preventDefault() }}>
               <Trash className='h-4 w-4 mr-2' />

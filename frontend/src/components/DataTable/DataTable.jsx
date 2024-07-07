@@ -72,6 +72,7 @@ export const DataTable = ({ setSelectedRows }) => {
   const handleBadgeClick = (filterValue) => {
     setStateFilter(filterValue)
     table.getColumn('state')?.setFilterValue(filterValue)
+    console.log(data)
   }
 
   useEffect(() => {

@@ -32,7 +32,8 @@ const formSchema = z.object({
   exit_condition: z.string(),
   delivery_date: z.date({
     required_error: 'Es obligatorio escoger una fecha.'
-  })
+  }),
+  isWarranty: z.boolean()
 })
 
 export function FormFields ({ setOpen, equipment, state }) {
@@ -49,7 +50,8 @@ export function FormFields ({ setOpen, equipment, state }) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       exit_condition: '',
-      delivery_date: currentDate
+      delivery_date: currentDate,
+      isWarranty: false
     }
   })
 

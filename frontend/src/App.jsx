@@ -6,6 +6,8 @@ import Login from './pages/Login'
 import { Dashboard } from './pages/Dashboard'
 import { Usuarios } from './pages/Usuarios'
 
+import Block from './pages/Block'
+
 function App () {
   const { isAuthenticated } = useAuth()
 
@@ -14,6 +16,8 @@ function App () {
       <Route index element={<Navigate to='/login' />} />
       <Route path='/' element={<Navigate to='/login' />} />
       <Route path='*' element={<Navigate to='/login' />} />
+
+      <Route path='/block' element={<Block />} />
 
       <Route path='/login' element={isAuthenticated ? <Navigate to='/dashboard' /> : <Login />} />
       <Route path='/Dashboard' element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />

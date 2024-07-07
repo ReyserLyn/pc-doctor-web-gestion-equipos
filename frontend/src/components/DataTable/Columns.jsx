@@ -85,8 +85,12 @@ export const Columns = () => [
     header: 'Estado',
     cell: ({ row }) => {
       const state = row.getValue('state')
+      const warranty = row.original.warranty !== 0
       let backgroundColorClass = ''
       let textColorClass = ''
+
+      let backgroundColorWarraty = ''
+      let textColorWarranty = ''
 
       switch (state) {
         case 'En reparación':
@@ -107,9 +111,15 @@ export const Columns = () => [
           break
       }
 
+      if (warranty) {
+        backgroundColorWarraty = 'bg-orange-100'
+        textColorWarranty = 'text-orange-800'
+      }
+
       return (
-        <div className={`${backgroundColorClass} ${textColorClass} rounded-lg px-2 py-1 text-xs font-semibold`}>
-          {state}
+        <div className=''>
+          {warranty && <div className={`${backgroundColorWarraty} ${textColorWarranty} mb-1 rounded-lg px-2 py-1 text-xs font-semibold`}>Garantía</div>}
+          <div className={`${backgroundColorClass} ${textColorClass} rounded-lg px-2 py-1 text-xs font-semibold`}>{state}</div>
         </div>
       )
     }

@@ -54,7 +54,8 @@ const formSchema = z.object({
     .max(1000, { message: 'La condición de entrada es muy larga' }),
   services: z.array(z.string()).refine(value => value.some(item => item), {
     message: 'Tienes que seleccionar mínimo uno'
-  })
+  }),
+  warranty: z.any()
 })
 
 const servicesFetch = [
@@ -112,28 +113,41 @@ export function FormFields ({ setOpen, equipment, device }) {
       model: '',
       device_id: '',
       entry_condition: '',
-      services: ['Mantenimiento', 'Limpieza']
+      services: ['Mantenimiento', 'Limpieza'],
+      warranty: 0
     }
   })
 
   useEffect(() => {
     if (equipment) {
-      form.reset({
-        customer: equipment.customer,
-        phone: equipment.phone,
-        brand: equipment.brand,
-        model: equipment.model,
-        device_id: getDeviceId(device),
-        entry_condition: equipment.entry_condition,
-        services: equipment.services ? equipment.services.split(', ') : ['Mantenimiento Interno', 'Activaciones']
-      })
+      if (equipment.state === 'Entregado') {
+        form.reset({
+          customer: equipment.customer,
+          phone: equipment.phone,
+          brand: equipment.brand,
+          model: equipment.model,
+          device_id: getDeviceId(device),
+          warranty: equipment.id
+        })
+        setIsEdit(false)
+      } else {
+        form.reset({
+          customer: equipment.customer,
+          phone: equipment.phone,
+          brand: equipment.brand,
+          model: equipment.model,
+          device_id: getDeviceId(device),
+          entry_condition: equipment.entry_condition,
+          services: equipment.services ? equipment.services.split(', ') : ['Mantenimiento Interno', 'Activaciones'],
+          warranty: 0
+        })
+        setIsEdit(true)
+      }
 
       if (getDeviceId(device) === '4') {
         form.setValue('device_id', device)
         setShowOtherInput(true)
       }
-
-      setIsEdit(true)
     }
   }, [equipment])
 

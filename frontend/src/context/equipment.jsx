@@ -1,5 +1,5 @@
 import { createContext } from 'react'
-import { create, edit, deleteEq, setRepair, setDelivered } from '@/api/equipment'
+import { create, getById, edit, deleteEq, setRepair, setDelivered } from '@/api/equipment'
 import { useRefreshEquipments } from '@/hooks/useRefreshEquipments'
 import { useStatusCount } from '@/hooks/useStatusCount'
 
@@ -65,6 +65,17 @@ export function EquipmentProvider ({ children }) {
     }
   }
 
+  const getByIdEquipment = async (id) => {
+    try {
+      const equipment = await getById(id)
+
+      return equipment
+    } catch (error) {
+      console.error('Error al obtener equipo:', error.message)
+      toast.error('Error al obtener equipo')
+    }
+  }
+
   const setRepairEquipment = async (id, exitCondition) => {
     try {
       await setRepair(id, exitCondition)
@@ -97,6 +108,7 @@ export function EquipmentProvider ({ children }) {
         equipments,
         statusCounts,
         createEquipment,
+        getByIdEquipment,
         editEquipment,
         deleteEquipment,
         setRepairEquipment,
