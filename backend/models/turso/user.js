@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import * as crypto from 'crypto'
 import { DateTime } from 'luxon'
 import * as bcrypt from 'bcrypt'
@@ -154,14 +155,14 @@ export class UserModel {
 
   static async update ({ id, user }) {
     const {
-      first_name, // eslint-disable-line camelcase
-      last_name, // eslint-disable-line camelcase
+      first_name,
+      last_name,
       username,
       password,
       email,
       phone,
-      role_id, // eslint-disable-line camelcase
-      status_id // eslint-disable-line camelcase
+      role_id,
+      status_id
     } = user
 
     const existingUserResult = await db.execute({
@@ -184,20 +185,27 @@ export class UserModel {
       return { error: 'Ya existe otro usuario con este nombre de usuario. Por favor, elige uno diferente.' }
     }
 
-    if (password) {
+    let query
+    let params
+
+    if (password !== '') {
       const isPasswordValid = await bcrypt.compare(password, existingUser.password)
       if (isPasswordValid) {
         return { error: 'La contraseña proporcionada es igual a la contraseña actual. Debes ingresar una contraseña diferente.' }
       }
-    }
 
-    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS)
+      const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS)
+      query = 'UPDATE users SET first_name = ?, last_name = ?, username = ?, password = ?, email = ?, phone = ?, role_id = ?, status_id = ? WHERE id = ?'
+      params = [first_name, last_name, username, hashedPassword, email, phone, role_id, status_id, id]
+    } else {
+      query = 'UPDATE users SET first_name = ?, last_name = ?, username = ?, email = ?, phone = ?, role_id = ?, status_id = ? WHERE id = ?'
+      params = [first_name, last_name, username, email, phone, role_id, status_id, id]
+    }
 
     try {
       await db.execute({
-        sql: 'UPDATE users SET first_name = ?, last_name = ?, username = ?, password=?, email = ?, phone = ?, role_id = ?, status_id = ? WHERE id = ?',
-        // eslint-disable-next-line camelcase
-        args: [first_name, last_name, username, hashedPassword, email, phone, role_id, status_id, id]
+        sql: query,
+        args: params
       })
     } catch (error) {
       throw new Error('Error al actualizar usuario')

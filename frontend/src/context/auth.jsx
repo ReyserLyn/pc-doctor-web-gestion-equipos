@@ -20,7 +20,6 @@ export function AuthProvider ({ children }) {
         setUser(userObj)
         setIsAuthenticated(true)
 
-        // Calcular el tiempo restante para la sesión
         const timeRemaining = expireTime.getTime() - new Date().getTime()
         setTimeout(() => logout(), timeRemaining)
       } else {
@@ -38,18 +37,23 @@ export function AuthProvider ({ children }) {
         setIsAuthenticated(false)
         setUser(null)
       } else {
-        setError(null)
-        setIsAuthenticated(true)
-        setUser(response)
+        if (response.status_id === 2) {
+          setError('El usuario ingresado se encuentra inactivo')
+          setIsAuthenticated(false)
+          setUser(null)
+        } else {
+          setError(null)
+          setIsAuthenticated(true)
+          setUser(response)
 
-        // Establecer tiempo de expiración en 1 hora
-        const expireTime = new Date()
-        expireTime.setHours(expireTime.getHours() + 1)
+          const expireTime = new Date()
+          expireTime.setHours(expireTime.getHours() + 1)
 
-        window.localStorage.setItem('user', JSON.stringify(response))
-        window.localStorage.setItem('expireTime', expireTime.toISOString())
+          window.localStorage.setItem('user', JSON.stringify(response))
+          window.localStorage.setItem('expireTime', expireTime.toISOString())
 
-        setTimeout(() => logout(), 3000000)
+          setTimeout(() => logout(), 3000000)
+        }
       }
     } catch (error) {
       setError('Error al iniciar sesión')

@@ -110,6 +110,7 @@ export function FormFields ({ setOpen, user, role, status }) {
 
   async function onSubmit (values) {
     isLoading(true)
+    console.log(values)
 
     try {
       let success = false

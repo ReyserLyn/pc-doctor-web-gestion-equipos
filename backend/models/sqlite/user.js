@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import Database from 'better-sqlite3'
 import crypto from 'node:crypto'
 import { DateTime } from 'luxon'
@@ -122,18 +123,25 @@ export class UserModel {
       return { error: 'Ya existe otro usuario con este nombre de usuario. Por favor, elige uno diferente.' }
     }
 
-    if (password) {
+    let query
+    let params
+
+    if (password !== '') {
       const isPasswordValid = await bcrypt.compare(password, existingUser.password)
       if (isPasswordValid) {
         return { error: 'La contraseña proporcionada es igual a la contraseña actual. Debes ingresar una contraseña diferente.' }
       }
+
+      const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS)
+      query = 'UPDATE users SET first_name = ?, last_name = ?, username = ?, password = ?, email = ?, phone = ?, role_id = ?, status_id = ? WHERE id = ?'
+      params = [first_name, last_name, username, hashedPassword, email, phone, role_id, status_id, id]
+    } else {
+      query = 'UPDATE users SET first_name = ?, last_name = ?, username = ?, email = ?, phone = ?, role_id = ?, status_id = ? WHERE id = ?'
+      params = [first_name, last_name, username, email, phone, role_id, status_id, id]
     }
 
-    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS)
-
     try {
-      await db.prepare('UPDATE users SET first_name = ?, last_name = ?, username = ?, password=?, email = ?, phone = ?, role_id = ?, status_id = ? WHERE id = ?')
-        .run(first_name, last_name, username, hashedPassword, email, phone, role_id, status_id, id)
+      await db.prepare(query).run(...params)
     } catch (error) {
       throw new Error('Error al actualizar usuario')
     }

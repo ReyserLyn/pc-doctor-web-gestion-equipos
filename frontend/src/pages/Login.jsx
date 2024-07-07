@@ -62,7 +62,7 @@ export default function Login () {
                   <AlertCircle className='h-4 w-4' />
                   <AlertTitle>Error al inciar sesión</AlertTitle>
                   <AlertDescription>
-                    El usuario no existe o los datos son incorrectos
+                    {error}
                   </AlertDescription>
                 </Alert>
                 )
