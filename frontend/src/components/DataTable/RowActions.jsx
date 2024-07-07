@@ -159,6 +159,7 @@ export const RowActions = ({ row }) => {
             description='Completa el formulario para modificar este equipo.'
             equipment={row.original}
             device={row.original.device}
+            exit_condition={row.original.exit_condition}
           >
             <DropdownMenuItem onSelect={(e) => { e.preventDefault() }} disabled={isDelivered}>
               <FilePenLine className='h-4 w-4 mr-2' />

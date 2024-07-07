@@ -20,9 +20,9 @@ CREATE TABLE IF NOT EXISTS "users" (
 	"role_id"	INTEGER,
 	"status_id"	INTEGER,
 	"created_at"	TEXT NOT NULL,
-	PRIMARY KEY("id"),
 	FOREIGN KEY("role_id") REFERENCES "role_user"("id"),
-	FOREIGN KEY("status_id") REFERENCES "state_user"("id")
+	FOREIGN KEY("status_id") REFERENCES "state_user"("id"),
+	PRIMARY KEY("id")
 );
 CREATE TABLE IF NOT EXISTS "devices_equipment" (
 	"id"	INTEGER,
@@ -42,9 +42,9 @@ CREATE TABLE IF NOT EXISTS "services_equipment" (
 CREATE TABLE IF NOT EXISTS "equipment_services" (
 	"equipment_id"	TEXT,
 	"service_id"	INTEGER,
-	PRIMARY KEY("equipment_id","service_id"),
 	FOREIGN KEY("service_id") REFERENCES "services_equipment"("id"),
-	FOREIGN KEY("equipment_id") REFERENCES "equipments"("id")
+	FOREIGN KEY("equipment_id") REFERENCES "equipments"("id"),
+	PRIMARY KEY("equipment_id","service_id")
 );
 CREATE TABLE IF NOT EXISTS "equipments" (
 	"id"	TEXT NOT NULL UNIQUE,
@@ -58,9 +58,11 @@ CREATE TABLE IF NOT EXISTS "equipments" (
 	"state_id"	INTEGER,
 	"entry_condition"	TEXT,
 	"exit_condition"	TEXT,
-	PRIMARY KEY("id"),
+	"warranty"	INTEGER,
+	"price"	REAL,
+	FOREIGN KEY("state_id") REFERENCES "state_equipment"("id"),
 	FOREIGN KEY("device_id") REFERENCES "devices_equipment"("id"),
-	FOREIGN KEY("state_id") REFERENCES "state_equipment"("id")
+	PRIMARY KEY("id")
 );
 INSERT INTO "role_user" ("id","name") VALUES (1,'Administrador'),
  (2,'Técnico');
@@ -69,21 +71,16 @@ INSERT INTO "state_user" ("id","name") VALUES (1,'Activo'),
 INSERT INTO "users" ("id","first_name","last_name","username","password","email","phone","role_id","status_id","created_at") VALUES ('f910fd68-2115-4671-a8b3-89a0a0d2f494','Admin Name','Admin Ap','admin','$2b$10$Dwk7xmAK.MSGHBwvUhLAA.5KwHJbFrFLxyUeioF36NQPzjc5Nv1zu','admin@admin.com','123456789',1,1,'24/06/2024, 01:47');
 INSERT INTO "devices_equipment" ("id","name") VALUES (1,'Laptop'),
  (2,'Computadora'),
- (3,'Impresora'),
+ (3,'Impresora');
 INSERT INTO "state_equipment" ("id","name") VALUES (1,'En reparación'),
  (2,'Reparado'),
- (3,'Entregado');
-INSERT INTO "services_equipment" ("id","name") VALUES (1,'Mantenimiento'),
- (2,'Internet'),
- (3,'Windows'),
- (4,'Limpieza'),
- (5,'Recarga Tintas'),
- (6,'Juegos'),
- (7,'Reparación'),
- (8,'Programas'),
- (9,'Drivers'),
- (10,'Formateo'),
- (11,'Antivirus'),
- (12,'Actualizaciones');
-
+ (3,'Entregado'),
+ (4,'Garantía');
+INSERT INTO "services_equipment" ("id","name") VALUES (1,'Mantenimiento Interno'),
+ (2,'Reparación'),
+ (3,'Formateo'),
+ (4,'Antivirus'),
+ (5,'Act. Windows'),
+ (6,'Act. Office'),
+ (7,'Programas');
 COMMIT;

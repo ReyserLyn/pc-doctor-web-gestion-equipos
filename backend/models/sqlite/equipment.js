@@ -15,7 +15,8 @@ export class EquipmentModel {
       model,
       entry_condition,
       services,
-      warranty
+      warranty,
+      price
     } = equipment
 
     const id = crypto.randomUUID()
@@ -56,8 +57,9 @@ export class EquipmentModel {
         delivery_date,
         state_id,
         exit_condition,
-        warranty
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        warranty,
+        price
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `
 
     try {
@@ -73,7 +75,8 @@ export class EquipmentModel {
         delivery_date,
         state_id,
         exit_condition,
-        warranty
+        warranty,
+        price
       )
 
       await Promise.all(services.map(async (serviceName) => {
@@ -104,6 +107,7 @@ export class EquipmentModel {
         e.entry_condition,
         e.exit_condition,
         e.warranty,
+        e.price,
         GROUP_CONCAT(se2.name, ', ') AS services
       FROM 
         equipments e
@@ -141,6 +145,7 @@ export class EquipmentModel {
         e.entry_condition,
         e.exit_condition,
         e.warranty,
+        e.price,
         GROUP_CONCAT(se2.name, ', ') AS services
       FROM 
         equipments e
@@ -177,6 +182,7 @@ export class EquipmentModel {
         e.entry_condition,
         e.exit_condition,
         e.warranty,
+        e.price,
         GROUP_CONCAT(se2.name, ', ') AS services
       FROM 
         equipments e
@@ -275,7 +281,9 @@ export class EquipmentModel {
       model,
       phone,
       entry_condition, // eslint-disable-line camelcase
-      services
+      services,
+      price,
+      exit_condition
     } = equipment
 
     const query = `
@@ -286,7 +294,9 @@ export class EquipmentModel {
         brand = ?,
         model = ?,
         phone = ?,
-        entry_condition = ?
+        entry_condition = ?,
+        price = ?,
+        exit_condition = ?
       WHERE id = ?
     `
 
@@ -308,7 +318,7 @@ export class EquipmentModel {
     }
 
     try {
-      await db.prepare(query).run(customer, insertedDeviceId, brand, model, phone, entry_condition, id)
+      await db.prepare(query).run(customer, insertedDeviceId, brand, model, phone, entry_condition, price, exit_condition, id)
       await db.prepare('DELETE FROM equipment_services WHERE equipment_id = ?').run(id)
 
       await Promise.all(services.map(async (serviceName) => {
@@ -335,6 +345,7 @@ export class EquipmentModel {
         se.name AS state,
         e.entry_condition,
         e.exit_condition,
+        e.price,
         GROUP_CONCAT(se2.name, ', ') AS services
       FROM 
         equipments e

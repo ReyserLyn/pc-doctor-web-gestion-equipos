@@ -30,26 +30,26 @@ export function PDFEquipment ({ equipments, setPdf }) {
           const [pageReverse] = await pdfDoc.copyPages(template, [1])
           const { height } = page.getSize()
 
-          const { rowid, customer, phone, reception_date, brand, delivery_date, device, entry_condition, exit_condition, model, services } = equipment
+          const { rowid, customer, phone, reception_date, brand, delivery_date, device, entry_condition, exit_condition, model, services, price } = equipment
           const [fechaRecepcion, horaRecepcion] = reception_date.split(' ')
           const [fechaEntrega, horaEntrega] = delivery_date.split(' ')
 
           const serviceCoordinates = {
-            Mantenimiento: { x: 133, y: height - 349 },
-            Internet: { x: 239, y: height - 349 },
-            Windows: { x: 385, y: height - 349 },
+            'Mantenimiento Interno': { x: 133, y: height - 349 },
+            Reparación: { x: 239, y: height - 349 },
+            Formateo: { x: 385, y: height - 349 },
 
-            Limpieza: { x: 133, y: height - 364 },
-            'Recarga Tintas': { x: 239, y: height - 364 },
-            Juegos: { x: 385, y: height - 364 },
+            Antivirus: { x: 133, y: height - 364 },
+            'Act. Windows': { x: 239, y: height - 364 },
+            'Act. Office': { x: 385, y: height - 364 },
 
-            Reparación: { x: 133, y: height - 379 },
-            Programas: { x: 239, y: height - 379 },
-            Drivers: { x: 385, y: height - 379 },
+            Programas: { x: 133, y: height - 379 }
+            // Programas: { x: 239, y: height - 379 },
+            // Drivers: { x: 385, y: height - 379 },
 
-            Formateo: { x: 133, y: height - 394 },
-            Antivirus: { x: 239, y: height - 394 },
-            Actualizaciones: { x: 385, y: height - 394 }
+            // Formateo: { x: 133, y: height - 394 },
+            // Antivirus: { x: 239, y: height - 394 },
+            // Actualizaciones: { x: 385, y: height - 394 }
           }
 
           page.drawText(formatNumberToSixDigits(rowid), {
@@ -118,16 +118,20 @@ export function PDFEquipment ({ equipments, setPdf }) {
 
           page.drawText(entry_condition, {
             x: 24,
-            y: height - 425,
-            size: 10,
+            y: height - 408,
+            maxWidth: 380,
+            lineHeight: 10,
+            size: 8,
             font: helveticaFont,
             color: rgb(0, 0, 0)
           })
 
           page.drawText(exit_condition, {
             x: 24,
-            y: height - 475,
-            size: 10,
+            y: height - 463,
+            maxWidth: 380,
+            lineHeight: 10,
+            size: 8,
             font: helveticaFont,
             color: rgb(0, 0, 0)
           })
@@ -142,6 +146,14 @@ export function PDFEquipment ({ equipments, setPdf }) {
 
           page.drawText(horaEntrega || 'Pendiente', {
             x: 182,
+            y: height - 512,
+            size: 10,
+            font: helveticaFont,
+            color: rgb(0, 0, 0)
+          })
+
+          page.drawText(String(price), {
+            x: 331,
             y: height - 512,
             size: 10,
             font: helveticaFont,

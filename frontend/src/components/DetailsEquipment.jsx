@@ -91,6 +91,10 @@ export const DetailsEquipment = ({ children, equipment, isWarranty }) => {
               <div className='font-medium'>Servicios:</div>
               <div>{equipmentNew.services}</div>
             </div>
+            <div className='col-span-full grid grid-cols-[150px_1fr] items-center gap-4'>
+              <div className='font-medium'>Precio:</div>
+              <div>{equipmentNew.price}</div>
+            </div>
 
             <div className='grid grid-cols-[150px_1fr] items-center gap-4'>
               <div className='font-medium'>Fecha de recepción:</div>

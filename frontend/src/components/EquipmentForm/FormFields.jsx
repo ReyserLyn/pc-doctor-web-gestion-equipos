@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
@@ -55,36 +56,17 @@ const formSchema = z.object({
   services: z.array(z.string()).refine(value => value.some(item => item), {
     message: 'Tienes que seleccionar mínimo uno'
   }),
-  warranty: z.any()
+  warranty: z.any(),
+  price: z.any(),
+  exit_condition: z.string()
 })
 
 const servicesFetch = [
   {
-    name: 'Mantenimiento'
-  },
-  {
-    name: 'Internet'
-  },
-  {
-    name: 'Windows'
-  },
-  {
-    name: 'Limpieza'
-  },
-  {
-    name: 'Recarga Tintas'
-  },
-  {
-    name: 'Juegos'
+    name: 'Mantenimiento Interno'
   },
   {
     name: 'Reparación'
-  },
-  {
-    name: 'Programas'
-  },
-  {
-    name: 'Drivers'
   },
   {
     name: 'Formateo'
@@ -93,11 +75,17 @@ const servicesFetch = [
     name: 'Antivirus'
   },
   {
-    name: 'Actualizaciones'
+    name: 'Act. Windows'
+  },
+  {
+    name: 'Act. Office'
+  },
+  {
+    name: 'Programas'
   }
 ]
 
-export function FormFields ({ setOpen, equipment, device }) {
+export function FormFields ({ setOpen, equipment, device, exit_condition = 'Pendiente' }) {
   const { createEquipment, editEquipment } = useContext(EquipmentContext)
 
   const [showOtherInput, setShowOtherInput] = useState(false)
@@ -113,8 +101,10 @@ export function FormFields ({ setOpen, equipment, device }) {
       model: '',
       device_id: '',
       entry_condition: '',
-      services: ['Mantenimiento', 'Limpieza'],
-      warranty: 0
+      services: ['Mantenimiento Interno'],
+      warranty: 0,
+      price: '',
+      exit_condition: 'Pendiente'
     }
   })
 
@@ -127,7 +117,9 @@ export function FormFields ({ setOpen, equipment, device }) {
           brand: equipment.brand,
           model: equipment.model,
           device_id: getDeviceId(device),
-          warranty: equipment.id
+          warranty: equipment.id,
+          price: equipment.price,
+          exit_condition: equipment.exit_condition
         })
         setIsEdit(false)
       } else {
@@ -138,8 +130,10 @@ export function FormFields ({ setOpen, equipment, device }) {
           model: equipment.model,
           device_id: getDeviceId(device),
           entry_condition: equipment.entry_condition,
-          services: equipment.services ? equipment.services.split(', ') : ['Mantenimiento Interno', 'Activaciones'],
-          warranty: 0
+          services: equipment.services ? equipment.services.split(', ') : ['Mantenimiento Interno'],
+          warranty: 0,
+          price: equipment.price,
+          exit_condition: equipment.exit_condition
         })
         setIsEdit(true)
       }
@@ -182,6 +176,7 @@ export function FormFields ({ setOpen, equipment, device }) {
         values.phone !== equipment.phone ||
         values.brand !== equipment.brand ||
         values.model !== equipment.model ||
+        values.price !== equipment.price ||
         values.entry_condition !== equipment.entry_condition ||
         !arraysEqual(values.services, equipment.services.split(', '))
 
@@ -197,12 +192,12 @@ export function FormFields ({ setOpen, equipment, device }) {
       } else {
         toast.error('No se realizó ningún cambio')
       }
-      isLoading(false)
     } else {
       createEquipment(values)
-      isLoading(false)
       setOpen(false)
     }
+
+    isLoading(false)
   }
 
   function arraysEqual (array1, array2) {
@@ -364,6 +359,35 @@ export function FormFields ({ setOpen, equipment, device }) {
             />
           </div>
 
+          {
+            exit_condition !== 'Pendiente'
+              ? (
+                <div className='space-y-2 md:col-span-3'>
+                  <FormField
+                    control={form.control}
+                    name='exit_condition'
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel htmlFor='exit_condition'>Condición de Salida</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            id='exit_condition'
+                            placeholder='Describe la condición de salida del equipo'
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                )
+              : (
+                <></>
+                )
+
+          }
+
           <div className='space-y-2 md:col-span-3'>
             <FormField
               control={form.control}
@@ -409,6 +433,24 @@ export function FormFields ({ setOpen, equipment, device }) {
                       />
                     ))}
                   </div>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <div className='md:col-span-2' />
+          <div className='space-y-2'>
+            <FormField
+              control={form.control}
+              name='price'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel htmlFor='price'>Precio</FormLabel>
+                  <FormControl>
+                    <Input id='price' placeholder='Precio del servicio' {...field} />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}

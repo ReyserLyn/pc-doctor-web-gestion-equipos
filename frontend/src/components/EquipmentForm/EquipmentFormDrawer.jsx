@@ -1,8 +1,9 @@
+/* eslint-disable camelcase */
 import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { FormFields } from './FormFields'
 
-export const EquipmentFormDrawer = ({ children, open, setOpen, title, description, equipment, device }) => {
+export const EquipmentFormDrawer = ({ children, open, setOpen, title, description, equipment, device, exit_condition }) => {
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
@@ -20,7 +21,7 @@ export const EquipmentFormDrawer = ({ children, open, setOpen, title, descriptio
 
         <ScrollArea className='h-auto overflow-y-auto'>
           <div className='mx-4'>
-            <FormFields setOpen={setOpen} equipment={equipment} device={device} />
+            <FormFields setOpen={setOpen} equipment={equipment} device={device} exit_condition={exit_condition} />
           </div>
         </ScrollArea>
 
