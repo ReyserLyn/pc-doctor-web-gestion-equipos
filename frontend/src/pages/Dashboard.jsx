@@ -13,10 +13,14 @@ import { DataTable } from '@/components/DataTable/DataTable'
 import { NavBar } from '@/components/NavBar'
 import { NavBarPhone } from '@/components/navBarPhone'
 
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import { DialogPDFEquipment } from '@/components/PDFEquipment/DialogPDFEquipment'
 
+import { AuthContext } from '@/context/auth'
+
 export function Dashboard () {
+  const { user } = useContext(AuthContext)
+
   const [selectedRows, setSelectedRows] = useState([])
 
   return (
@@ -39,16 +43,20 @@ export function Dashboard () {
                   Imprimir
                 </Button>
               </DialogPDFEquipment>
+              {
+                user.role_id === 1 &&
+                  <EquipmentForm
+                    title='Nuevo Equipo'
+                    description='Completa el formulario para agregar un nuevo equipo.'
+                  >
+                    <Button className='ml-auto md:ml-0'>
+                      <SquarePlus className='w-5 h-5 mr-2' />
+                      Nuevo Equipo
+                    </Button>
+                  </EquipmentForm>
 
-              <EquipmentForm
-                title='Nuevo Equipo'
-                description='Completa el formulario para agregar un nuevo equipo.'
-              >
-                <Button className='ml-auto md:ml-0'>
-                  <SquarePlus className='w-5 h-5 mr-2' />
-                  Nuevo Equipo
-                </Button>
-              </EquipmentForm>
+              }
+
             </NavBarPhone>
 
             <DataTable setSelectedRows={setSelectedRows} />

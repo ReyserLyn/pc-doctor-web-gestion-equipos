@@ -1,8 +1,11 @@
 'use client'
 import { Link, useLocation } from 'react-router-dom'
 import { LayoutDashboard, Users } from 'lucide-react'
+import { useContext } from 'react'
+import { AuthContext } from '@/context/auth'
 
 export function NavBar () {
+  const { user } = useContext(AuthContext)
   const location = useLocation()
 
   return (
@@ -29,14 +32,17 @@ export function NavBar () {
             <LayoutDashboard className='h-4 w-4' />
             Dashboard
           </Link>
-          <Link
-            to='/usuarios'
-            className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all 
+          {
+            user.role_id === 1 &&
+              <Link
+                to='/usuarios'
+                className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all 
                 ${location.pathname === '/usuarios' ? 'bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-50' : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50'}`}
-          >
-            <Users className='h-4 w-4' />
-            Usuarios
-          </Link>
+              >
+                <Users className='h-4 w-4' />
+                Usuarios
+              </Link>
+          }
         </nav>
       </div>
     </>
