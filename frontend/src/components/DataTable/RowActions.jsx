@@ -18,6 +18,7 @@ import { EquipmentContext } from '@/context/equipment'
 import { StatusForm } from '../StatusForm/StatusForm'
 import { DetailsEquipment } from '../DetailsEquipment'
 import { AlertDialogDelete } from '../AlertDialogDelete'
+import { AuthContext } from '@/context/auth'
 
 const statusMap = {
   'En reparación': {
@@ -36,6 +37,8 @@ const statusMap = {
 }
 
 export const RowActions = ({ row }) => {
+  const { user } = useContext(AuthContext)
+
   const { deleteEquipment } = useContext(EquipmentContext)
   const [loading, isLoading] = useState(false)
 
@@ -93,15 +96,19 @@ export const RowActions = ({ row }) => {
 
   return (
     <div className='flex items-center justify-center'>
-      <StatusForm
-        title={title}
-        description={description}
-        equipment={row.original}
-      >
-        <Button variant='outline' size='icon' disabled={isDelivered}>
-          {icon}
-        </Button>
-      </StatusForm>
+      {
+        user.role_id === 1 && (
+          <StatusForm
+            title={title}
+            description={description}
+            equipment={row.original}
+          >
+            <Button variant='outline' size='icon' disabled={isDelivered}>
+              {icon}
+            </Button>
+          </StatusForm>
+        )
+      }
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -133,52 +140,54 @@ export const RowActions = ({ row }) => {
           }
 
           {
-            isDelivered
-              ? (
-
-                <EquipmentForm
-                  title='Ingresar equipo por garantía'
-                  description='Completa el formulario para ingresar una nueva entrada por garantía de este equipo'
-                  equipment={row.original}
-                  device={row.original.device}
-                >
-                  <DropdownMenuItem onSelect={(e) => { e.preventDefault() }}>
-                    <ShieldPlus className='h-4 w-4 mr-2' />
-                    Garantía
-                  </DropdownMenuItem>
-
-                </EquipmentForm>
-
-                )
-              : ('')
-
+            isDelivered && user.role_id === 1 && (
+              <EquipmentForm
+                title='Ingresar equipo por garantía'
+                description='Completa el formulario para ingresar una nueva entrada por garantía de este equipo'
+                equipment={row.original}
+                device={row.original.device}
+              >
+                <DropdownMenuItem onSelect={(e) => { e.preventDefault() }}>
+                  <ShieldPlus className='h-4 w-4 mr-2' />
+                  Garantía
+                </DropdownMenuItem>
+              </EquipmentForm>
+            )
           }
 
-          <EquipmentForm
-            title='Editar equipo'
-            description='Completa el formulario para modificar este equipo.'
-            equipment={row.original}
-            device={row.original.device}
-            exit_condition={row.original.exit_condition}
-          >
-            <DropdownMenuItem onSelect={(e) => { e.preventDefault() }} disabled={isDelivered}>
-              <FilePenLine className='h-4 w-4 mr-2' />
-              Editar Equipo
-            </DropdownMenuItem>
-          </EquipmentForm>
+          {
+            user.role_id === 1 && (
+              <EquipmentForm
+                title='Editar equipo'
+                description='Completa el formulario para modificar este equipo.'
+                equipment={row.original}
+                device={row.original.device}
+                exit_condition={row.original.exit_condition}
+              >
+                <DropdownMenuItem onSelect={(e) => { e.preventDefault() }} disabled={isDelivered}>
+                  <FilePenLine className='h-4 w-4 mr-2' />
+                  Editar Equipo
+                </DropdownMenuItem>
+              </EquipmentForm>
+            )
+          }
 
-          <AlertDialogDelete
-            deleteFunction={handleDelete}
-            title='¿Estás seguro de eliminar este equipo?'
-            description='Esta acción no se puede deshacer. El equipo se eliminará permanentemente y sus datos asociados.'
-            loading={loading}
-            isLoading={isLoading}
-          >
-            <DropdownMenuItem onSelect={(e) => { e.preventDefault() }}>
-              <Trash className='h-4 w-4 mr-2' />
-              Eliminar equipo
-            </DropdownMenuItem>
-          </AlertDialogDelete>
+          {
+            user.role_id === 1 && (
+              <AlertDialogDelete
+                deleteFunction={handleDelete}
+                title='¿Estás seguro de eliminar este equipo?'
+                description='Esta acción no se puede deshacer. El equipo se eliminará permanentemente y sus datos asociados.'
+                loading={loading}
+                isLoading={isLoading}
+              >
+                <DropdownMenuItem onSelect={(e) => { e.preventDefault() }}>
+                  <Trash className='h-4 w-4 mr-2' />
+                  Eliminar equipo
+                </DropdownMenuItem>
+              </AlertDialogDelete>
+            )
+          }
 
           <DropdownMenuSeparator />
 

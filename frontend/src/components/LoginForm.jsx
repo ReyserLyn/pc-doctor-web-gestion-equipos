@@ -1,3 +1,4 @@
+import { useState, useContext } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -13,7 +14,6 @@ import {
   FormLabel,
   FormMessage
 } from '@/components/ui/form'
-import { useState, useContext } from 'react'
 
 import { AuthContext } from '@/context/auth'
 
@@ -26,20 +26,18 @@ const formSchema = z.object({
     .string()
     .min(2)
     .max(50)
-
 })
 
 export function LoginForm () {
-  const { login, setError, error } = useContext(AuthContext)
+  const { login, setError, error, isDisabled } = useContext(AuthContext)
   const [password, setPassword] = useState('')
-  const [loading, isLoading] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   async function onSubmit (values) {
     setError(null)
-    isLoading(true)
+    setLoading(true)
     await login(values)
-
-    isLoading(false)
+    setLoading(false)
   }
 
   const form = useForm({
@@ -58,9 +56,17 @@ export function LoginForm () {
           name='username'
           render={({ field }) => (
             <FormItem>
-              <FormLabel htmlFor='username' className='text-md'>Nombre de usuario</FormLabel>
+              <FormLabel htmlFor='username' className='text-md'>
+                Nombre de usuario
+              </FormLabel>
               <FormControl>
-                <Input id='username' placeholder='Ingresa tu nombre de usuario' className={`text-md border  ${error ? 'border-red-300' : ''} `} {...field} />
+                <Input
+                  id='username'
+                  placeholder='Ingresa tu nombre de usuario'
+                  className={`text-md border ${error ? 'border-red-300' : ''}`}
+                  {...field}
+                  disabled={isDisabled || loading}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -72,17 +78,20 @@ export function LoginForm () {
           name='password'
           render={({ field }) => (
             <FormItem>
-              <FormLabel htmlFor='password' className='text-md'>Contraseña</FormLabel>
+              <FormLabel htmlFor='password' className='text-md'>
+                Contraseña
+              </FormLabel>
               <FormControl>
                 <div>
-
                   <PasswordInput
-                    id='password' placeholder='Ingresa tu contraseña' className={`text-md border ${error ? 'border-red-300' : ''}`}
+                    id='password'
+                    placeholder='Ingresa tu contraseña'
+                    className={`text-md border ${error ? 'border-red-300' : ''}`}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     {...field}
+                    disabled={isDisabled || loading}
                   />
-
                 </div>
               </FormControl>
               <FormMessage />
@@ -90,21 +99,19 @@ export function LoginForm () {
           )}
         />
 
-        {
-          loading
-            ? (
-              <Button disabled className='w-full h-12 text-md'>
-                <Loader2 className='mr-2 h-4 w-4 animate-spin ' />
-                Cargando
-              </Button>
-              )
-            : (
-              <Button type='submit' className='w-full h-12 text-md'>
-                <LogIn className='w-5 h-5 mr-2' />
-                Iniciar Sesión
-              </Button>
-              )
-        }
+        {loading
+          ? (
+            <Button disabled className='w-full h-12 text-md'>
+              <Loader2 className='mr-2 h-4 w-4 animate-spin ' />
+              Cargando
+            </Button>
+            )
+          : (
+            <Button type='submit' className='w-full h-12 text-md' disabled={isDisabled}>
+              <LogIn className='w-5 h-5 mr-2' />
+              {isDisabled ? 'Intentos bloqueados, espera 5 minutos' : 'Iniciar Sesión'}
+            </Button>
+            )}
       </form>
     </Form>
   )
